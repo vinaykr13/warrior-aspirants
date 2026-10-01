@@ -87,34 +87,61 @@ public class MainActivity extends Activity {
     }
 
     void homeContent(){
-        body.addView(header());body.addView(searchBox());body.addView(examChips());
-        section("TODAY'S STUDY PLAN");
-        LinearLayout plan=new LinearLayout(this);plan.setOrientation(LinearLayout.VERTICAL);plan.setPadding(15,13,15,13);plan.setBackground(stroke(WHITE,Color.rgb(225,229,236),18));plan.setElevation(2);
-        LinearLayout top=new LinearLayout(this);top.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout d=new LinearLayout(this);d.setOrientation(LinearLayout.VERTICAL);d.addView(muted("Daily target",11));d.addView(title("13",21));
-        top.addView(d,new LinearLayout.LayoutParams(0,58,1));
-        TextView fire=text("⚔",24,RED,true);fire.setGravity(Gravity.CENTER);top.addView(fire,new LinearLayout.LayoutParams(50,50));
-        LinearLayout st=new LinearLayout(this);st.setOrientation(LinearLayout.VERTICAL);st.setPadding(8,0,0,0);st.addView(muted("Study streak",11));st.addView(title(Math.max(1,store.streak())+" days",18));
-        top.addView(st,new LinearLayout.LayoutParams(0,58,1));plan.addView(top);
-        LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-1,-2);pp.setMargins(0,6,0,10);body.addView(plan,pp);animateView(plan,40);
+        LinearLayout top=new LinearLayout(this);top.setOrientation(LinearLayout.HORIZONTAL);top.setGravity(Gravity.CENTER_VERTICAL);
+        top.setPadding(4,10,4,8);top.setBackgroundColor(NAVY);
+        Button menu=new Button(this);menu.setText("☰");menu.setTextColor(WHITE);menu.setTextSize(22);menu.setAllCaps(false);menu.setBackgroundColor(Color.TRANSPARENT);menu.setOnClickListener(v->telegramMenu());
+        top.addView(menu,new LinearLayout.LayoutParams(52,52));
+        LinearLayout names=new LinearLayout(this);names.setOrientation(LinearLayout.VERTICAL);names.addView(text("WARRIOR ASPIRANTS",17,WHITE,true));names.addView(text("Study • Practice • Achieve",10,Color.rgb(190,204,228),false));
+        top.addView(names,new LinearLayout.LayoutParams(0,54,1));
+        TextView search=text("⌕",27,WHITE,false);search.setGravity(Gravity.CENTER);top.addView(search,new LinearLayout.LayoutParams(48,52));
+        body.addView(top);
+        TextView welcome=text("Welcome, Warrior! ⚔",22,DARK,true);welcome.setPadding(4,16,4,8);body.addView(welcome);
+        LinearLayout searchRow=new LinearLayout(this);searchRow.setGravity(Gravity.CENTER_VERTICAL);searchRow.setPadding(12,0,8,0);searchRow.setBackground(shape(WHITE,16));
+        searchRow.addView(text("⌕",23,MUTED,false),new LinearLayout.LayoutParams(34,48));searchRow.addView(muted("Search lessons, PYQs, topics...",13),new LinearLayout.LayoutParams(0,48,1));searchRow.addView(text("☷",20,RED,true),new LinearLayout.LayoutParams(38,48));
+        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,50);sp.setMargins(0,2,0,10);body.addView(searchRow,sp);
+        LinearLayout chips=new LinearLayout(this);
+        String[] exams={"SSC CGL","Railway","UP SI"};for(int i=0;i<3;i++){TextView c=chip(exams[i],i==0);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,36);cp.setMargins(0,0,7,0);chips.addView(c,cp);}
+        body.addView(chips);
+        section("TODAY");
+        listRow("📚","Continue Learning","Maths • Number System","Resume where you stopped",v->lesson("Number System"));
+        listRow("⚡","Practice Questions","10 questions","Improve speed & accuracy",v->practice());
+        listRow("🏆","Mock Test","SSC CGL Tier 1","Full test • Timer • Analysis",v->mock());
+        section("STUDY");
+        listRow("📐","Maths","12 topics available","Basic → Advanced",v->topics("Maths"));
+        listRow("🧠","Reasoning","8 topics available","Concepts → Practice",v->topics("Reasoning"));
+        listRow("🔤","English","8 topics available","Grammar → PYQs",v->topics("English"));
+        listRow("🌍","GK / GS","7 topics available","Static + Science",v->topics("GK / GS"));
+        section("TOOLS");
+        listRow("📚","PYQ Bank","SSC CGL • Railway • UP SI","Year • Shift • Topic",v->pyq());
+        listRow("📰","Current Affairs","Daily • Weekly • Monthly","Fresh verified updates",v->page("Current Affairs"));
+        listRow("📕","Mistake Book",mistakes.size()+" saved questions","Revise your weak points",v->mistakes());
+        listRow("🤖","Fighter AI","Explain • Solve • Quiz","Your study partner",v->fighter());
+        TextView p=text("⚔ "+store.xp()+" XP   •   Level "+store.level()+"   •   Accuracy "+store.accuracy()+"%",11,RED,true);p.setGravity(Gravity.CENTER);p.setPadding(0,15,0,15);body.addView(p);
+    }
 
-        LinearLayout prog=new LinearLayout(this);prog.setOrientation(LinearLayout.VERTICAL);prog.addView(muted("Overall preparation",11));TextView pct=title(store.prep()+"%",14);pct.setGravity(Gravity.RIGHT);prog.addView(pct);
-        ProgressBar pb=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);pb.setProgress(store.prep());pb.setProgressDrawable(shape(RED,8));prog.addView(pb,new LinearLayout.LayoutParams(-1,9));
-        plan.addView(prog);
+    void listRow(String icon,String titleText,String line1,String line2,View.OnClickListener l){
+        LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(10,6,8,6);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));c.setOnClickListener(l);
+        TextView ic=text(icon,23,RED,true);ic.setGravity(Gravity.CENTER);c.addView(ic,new LinearLayout.LayoutParams(48,58));
+        LinearLayout mid=new LinearLayout(this);mid.setOrientation(LinearLayout.VERTICAL);mid.setPadding(8,0,5,0);mid.addView(title(titleText,15));mid.addView(muted(line1,10));mid.addView(muted(line2,9));c.addView(mid,new LinearLayout.LayoutParams(0,66,1));
+        TextView arrow=text("›",28,RED,false);arrow.setGravity(Gravity.CENTER);c.addView(arrow,new LinearLayout.LayoutParams(34,66));
+        c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,74);p.setMargins(0,3,0,3);body.addView(c,p);animateView(c,body.getChildCount()*12);
+    }
 
-        LinearLayout grid=new LinearLayout(this);grid.setOrientation(LinearLayout.VERTICAL); 
-        gridRow(grid,new String[]{"▣\nContinue\nLearning","☑\nPractice\nQuestions","🏆\nMock\nTest"},new View.OnClickListener[]{v->lesson("Number System"),v->practice(),v->mock()});
-        gridRow(grid,new String[]{"▤\nPYQs","▣\nNotes","◎\nCurrent\nAffairs"},new View.OnClickListener[]{v->pyq(),v->toast("Notes module ready for your saved notes."),v->page("Current Affairs")});
-        LinearLayout.LayoutParams gp=new LinearLayout.LayoutParams(-1,-2);gp.setMargins(0,10,0,2);body.addView(grid,gp);
-
-        section("TODAY'S CURRENT AFFAIRS");
-        newsCard("एक बढ़ई को कुल 20% का लाभ दिया गया। यदि नया मूल्य ₹600 है, तो...");
-        newsCard("SSC CGL preparation: आज के महत्वपूर्ण one-liners और revision points");
-        section("RECOMMENDED FOR YOU");
-        LinearLayout rec=new LinearLayout(this);rec.setOrientation(LinearLayout.HORIZONTAL);
-        recCard(rec,"Maths\nNumber System",v->lesson("Number System"));recCard(rec,"Reasoning\nSeries",v->lesson("Series"));recCard(rec,"English\nTenses",v->lesson("Tenses"));
-        body.addView(rec);
-        View fighter=floatingFighter();body.addView(fighter,new LinearLayout.LayoutParams(-1,58));
+    void telegramMenu(){
+        body.removeAllViews();
+        LinearLayout head=new LinearLayout(this);head.setOrientation(LinearLayout.VERTICAL);head.setPadding(18,20,18,18);head.setBackground(NAVY==0?shape(NAVY,0):shape(NAVY,0));
+        head.addView(text("WARRIOR ASPIRANTS",20,WHITE,true));head.addView(text("SSC CGL 2027 • Railway • UP SI",11,Color.rgb(205,215,235),false));body.addView(head);
+        section("MENU");
+        listRow("⌂","Home","Dashboard","Today's mission",v->page("Home"));
+        listRow("📚","Study Room","Maths • Reasoning • English • GK/GS","Learn concepts",v->page("Study"));
+        listRow("⚡","Practice Arena","Quick practice • Topic practice","Build speed",v->page("Practice"));
+        listRow("📖","PYQ Bank","Previous year questions","Exam • Year • Topic",v->pyq());
+        listRow("📰","Current Affairs","Daily • Weekly • Monthly","Stay updated",v->page("Current Affairs"));
+        listRow("📕","Mistake Book",mistakes.size()+" saved","Revise mistakes",v->mistakes());
+        listRow("🤖","Fighter AI","Explain • Solve • Quiz","Ask your doubt",v->fighter());
+        listRow("👤","Profile","Progress • History • Settings","Your account",v->page("Profile"));
+        action("←  Back to Home",v->page("Home"));
     }
 
     void gridRow(LinearLayout parent,String[] labels,View.OnClickListener[] ls){
