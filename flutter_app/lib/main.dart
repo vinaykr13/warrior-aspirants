@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const WarriorAspirantApp());
@@ -555,16 +554,27 @@ class _SimplePageState extends State<SimplePage>{
     ]))
   ]);
   Widget quizPage(){
-    final qs=[['15 का 20% कितना है?',['2','3','4','5'],'3'],['यदि 3x=21, x=?',['5','6','7','8'],'7'],['भारत का संविधान कब लागू हुआ?',['1947','1949','1950','1952'],'1950']];
-    final q=qs[DateTime.now().second%qs.length]; final options=q[1] as List<String>;
+    final qs=<List<Object>>[
+      <Object>['15 का 20% कितना है?',<String>['2','3','4','5'],'3'],
+      <Object>['यदि 3x=21, x=?',<String>['5','6','7','8'],'7'],
+      <Object>['भारत का संविधान कब लागू हुआ?',<String>['1947','1949','1950','1952'],'1950']
+    ];
+    final q=qs[DateTime.now().second%qs.length];
+    final question=q[0] as String;
+    final options=q[1] as List<String>;
+    final correct=q[2] as String;
     return ListView(padding:const EdgeInsets.all(18),children:[
       Text(widget.title,style:const TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
-      const Text('Practice/PYQ engine • answer • explanation • progress',style:TextStyle(color:AppColors.muted)),const SizedBox(height:18),
+      const Text('Practice/PYQ engine • answer • explanation • progress',style:TextStyle(color:AppColors.muted)),
+      const SizedBox(height:18),
       Card(color:AppColors.surface,child:Padding(padding:const EdgeInsets.all(14),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-        Text(q[0] as String,style:const TextStyle(color:AppColors.white,fontSize:19,fontWeight:FontWeight.w800)),
-        for(int i=0;i<options.length;i++)RadioListTile<int>(value:i,groupValue:answer,onChanged:(v)=>setState(()=>answer=v!),activeColor:AppColors.gold,title:Text(options[i],style:const TextStyle(color:AppColors.white))),
-        if(answer>=0)Text(answer==options.indexOf(q[2] as String)?'✓ Correct — concept applied correctly.':'✗ Correct answer: '+q[2],style:TextStyle(color:answer==options.indexOf(q[2] as String)?Colors.green:AppColors.orange,fontWeight:FontWeight.w800)),
-        const SizedBox(height:8),ElevatedButton(onPressed:answer<0?null:(){setState(()=>answer=-1);},child:const Text('SUBMIT & CONTINUE'))
+        Text(question,style:const TextStyle(color:AppColors.white,fontSize:19,fontWeight:FontWeight.w800)),
+        for(int i=0;i<options.length;i++)
+          RadioListTile<int>(value:i,groupValue:answer,onChanged:(v)=>setState(()=>answer=v ?? -1),activeColor:AppColors.gold,title:Text(options[i],style:const TextStyle(color:AppColors.white))),
+        if(answer>=0)
+          Text(answer==options.indexOf(correct)?'✓ Correct — concept applied correctly.':'✗ Correct answer: '+correct,style:TextStyle(color:answer==options.indexOf(correct)?Colors.green:AppColors.orange,fontWeight:FontWeight.w800)),
+        const SizedBox(height:8),
+        ElevatedButton(onPressed:answer<0?null:()=>setState(()=>answer=-1),child:const Text('SUBMIT & CONTINUE'))
       ]))
     ]);
   }
