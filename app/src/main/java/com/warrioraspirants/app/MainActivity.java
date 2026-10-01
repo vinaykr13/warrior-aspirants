@@ -22,6 +22,13 @@ public class MainActivity extends Activity{
   else if(p.equals("Current Affairs")){card("CURRENT AFFAIRS","Daily → Weekly → Monthly","Live/current content will be connected through the update module.");action("📅 Daily Current Affairs",v->ca("Daily Current Affairs"));action("📚 Weekly Revision",v->ca("Weekly Revision"));action("🗓 Monthly One-Liners",v->ca("Monthly One-Liners"));action("❓ Daily Quiz",v->ca("Current Affairs Quiz"));}
   else {card("WARRIOR PROFILE","Level "+store.level()+" • XP "+store.xp()+" • Streak "+store.streak()+" days","Target: SSC CGL 2027 • Railway • UP SI");action("⚙️ Preparation Settings",v->settings());action("📊 My Progress",v->progress());}
  }
+ void shareApp(){
+  android.content.Intent i=new android.content.Intent(android.content.Intent.ACTION_SEND);
+  i.setType("text/plain");
+  i.putExtra(android.content.Intent.EXTRA_SUBJECT,"Warrior Aspirants — Exam Preparation App");
+  i.putExtra(android.content.Intent.EXTRA_TEXT,"Warrior Aspirants\nSSC CGL • Railway • UP SI\nLearn → Practice → Analyze → Improve → Achieve\nhttps://github.com/vinaykr13/warrior-aspirants");
+  startActivity(android.content.Intent.createChooser(i,"Share Warrior Aspirants"));
+ }
  void section(String s){body.addView(text(s,13,RED,true));}
  void card(String h,String sub,String val){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(8,10,8,10);c.setBackground(shape(WHITE,26));c.setElevation(4);c.addView(text(h,16,RED,true));c.addView(text(sub,17,DARK,true));c.addView(text(val,13,MUTED,false));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,7,0,8);body.addView(c,p);}
  void hero(String h,String b){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(12,12,12,12);c.setBackground(shape(NAVY,26));c.addView(text(h,12,Color.LTGRAY,true));c.addView(text(b,18,WHITE,true));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,5,0,10);body.addView(c,p);}
