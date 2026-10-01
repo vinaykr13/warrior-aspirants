@@ -86,56 +86,103 @@ public class MainActivity extends Activity {
         return row;
     }
 
+    String greeting(){
+        Calendar c=Calendar.getInstance();
+        int h=c.get(Calendar.HOUR_OF_DAY);
+        if(h>=5 && h<12) return "Good morning, Warrior.";
+        if(h>=12 && h<17) return "Good afternoon, Warrior.";
+        return "Good evening, Warrior.";
+    }
+    GradientDrawable gradient(int start,int end,float r){
+        GradientDrawable g=new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{start,end});
+        g.setCornerRadius(r); return g;
+    }
+    TextView iconBadge(String label,int bg,int fg){
+        TextView v=text(label,12,fg,true); v.setGravity(Gravity.CENTER); v.setBackground(shape(bg,18)); return v;
+    }
+
     void homeContent(){
-        body.setPadding(20,10,20,20);
+        body.setPadding(18,8,18,28);
 
-        LinearLayout appbar=new LinearLayout(this); appbar.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout top=new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
         ImageView logo=new ImageView(this); logo.setImageResource(R.drawable.warrior_icon); logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        appbar.addView(logo,new LinearLayout.LayoutParams(48,48));
+        top.addView(logo,new LinearLayout.LayoutParams(48,48));
         LinearLayout brand=new LinearLayout(this); brand.setOrientation(LinearLayout.VERTICAL); brand.setPadding(10,0,0,0);
-        brand.addView(text("WARRIOR ASPIRANTS",16,NAVY,true)); brand.addView(text("KNOWLEDGE FOR VICTORY",9,MUTED,false));
-        appbar.addView(brand,new LinearLayout.LayoutParams(0,52,1));
-        TextView bell=text("•",22,RED,true); bell.setGravity(Gravity.CENTER); bell.setBackground(stroke(WHITE,Color.rgb(228,232,239),25));
-        appbar.addView(bell,new LinearLayout.LayoutParams(42,42)); body.addView(appbar);
+        brand.addView(text("WARRIOR ASPIRANTS",15,NAVY,true));
+        brand.addView(text("KNOWLEDGE FOR VICTORY",8,MUTED,true));
+        top.addView(brand,new LinearLayout.LayoutParams(0,52,1));
+        TextView bell=iconBadge("•",Color.rgb(247,239,240),RED);
+        top.addView(bell,new LinearLayout.LayoutParams(42,42));
+        body.addView(top);
 
-        TextView hello=text("Good evening, Warrior.",24,DARK,true); hello.setPadding(0,18,0,3); body.addView(hello);
+        TextView hello=text(greeting(),25,DARK,true); hello.setPadding(0,18,0,2); body.addView(hello);
         body.addView(muted("Your preparation continues today.",12));
 
-        LinearLayout hero=new LinearLayout(this); hero.setOrientation(LinearLayout.VERTICAL); hero.setPadding(18,17,18,17); hero.setBackground(shape(NAVY,22)); hero.setElevation(5);
+        LinearLayout hero=new LinearLayout(this); hero.setOrientation(LinearLayout.VERTICAL); hero.setPadding(20,19,20,18);
+        hero.setBackground(gradient(Color.rgb(7,25,57),Color.rgb(18,54,101),24)); hero.setElevation(7);
         LinearLayout ht=new LinearLayout(this); ht.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout hcopy=new LinearLayout(this); hcopy.setOrientation(LinearLayout.VERTICAL);
-        hcopy.addView(text("TODAY'S MISSION",10,Color.rgb(184,202,229),true)); hcopy.addView(text("Keep your streak alive",20,WHITE,true)); hcopy.addView(text("13 tasks • 2h 30m planned",11,Color.rgb(215,225,240),false));
-        ht.addView(hcopy,new LinearLayout.LayoutParams(0,72,1));
-        TextView ring=text(store.prep()+"%",21,WHITE,true); ring.setGravity(Gravity.CENTER); ring.setBackground(stroke(NAVY2,RED,52)); ht.addView(ring,new LinearLayout.LayoutParams(72,72)); hero.addView(ht);
-        Button resume=new Button(this); resume.setText("CONTINUE LEARNING  →"); resume.setTextSize(12); resume.setTextColor(WHITE); resume.setAllCaps(false); resume.setBackground(shape(RED,18)); resume.setOnClickListener(v->lesson("Number System")); hero.addView(resume,new LinearLayout.LayoutParams(-1,46));
-        LinearLayout.LayoutParams hp=new LinearLayout.LayoutParams(-1,-2); hp.setMargins(0,16,0,14); body.addView(hero,hp); animateView(hero,60);
+        LinearLayout copy=new LinearLayout(this); copy.setOrientation(LinearLayout.VERTICAL);
+        copy.addView(text("TODAY'S MISSION",10,Color.rgb(180,201,231),true));
+        copy.addView(text("Build today's momentum.",21,WHITE,true));
+        copy.addView(text("13 tasks  •  2h 30m planned",11,Color.rgb(215,226,241),false));
+        ht.addView(copy,new LinearLayout.LayoutParams(0,76,1));
+        TextView pct=text(store.prep()+"%",20,WHITE,true); pct.setGravity(Gravity.CENTER);
+        pct.setBackground(stroke(Color.TRANSPARENT,RED,50)); ht.addView(pct,new LinearLayout.LayoutParams(72,72)); hero.addView(ht);
+        TextView resume=text("CONTINUE LEARNING   ›",12,WHITE,true); resume.setGravity(Gravity.CENTER);
+        resume.setBackground(shape(RED,16)); resume.setOnClickListener(v->lesson("Number System"));
+        LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,46);rp.setMargins(0,13,0,0);hero.addView(resume,rp);
+        LinearLayout.LayoutParams hp=new LinearLayout.LayoutParams(-1,-2);hp.setMargins(0,18,0,16);body.addView(hero,hp);animateView(hero,50);
 
-        section("YOUR EXAMS");
-        LinearLayout exams=new LinearLayout(this);
-        premiumExam(exams,"SSC CGL","Primary",true,v->topics("Maths"));
-        premiumExam(exams,"Railway","Practice",false,v->topics("Reasoning"));
-        premiumExam(exams,"UP SI","Practice",false,v->page("Study"));
-        body.addView(exams);
-
-        section("QUICK ACTIONS");
-        LinearLayout actions=new LinearLayout(this); actions.setOrientation(LinearLayout.VERTICAL);
-        premiumAction(actions,"Study Room","Learn concepts & formulas","STUDY",v->page("Study"));
-        premiumAction(actions,"Practice Arena","Build speed and accuracy","PRACTICE",v->practice());
-        premiumAction(actions,"PYQ Bank","Previous year questions with solutions","PYQ",v->pyq());
-        premiumAction(actions,"Mock Tests","Full tests with performance analysis","TEST",v->mock());
-        body.addView(actions);
-
-        section("YOUR PERFORMANCE");
+        section("PREPARATION");
         LinearLayout stats=new LinearLayout(this); stats.setWeightSum(3);
-        statCard(stats,"PREPARATION",store.prep()+"%"); statCard(stats,"ACCURACY",store.accuracy()+"%"); statCard(stats,"XP",String.valueOf(store.xp()));
+        premiumStat(stats,"PREP",store.prep()+"%","Progress");
+        premiumStat(stats,"ACCURACY",store.accuracy()+"%","Overall");
+        premiumStat(stats,"XP",String.valueOf(store.xp()),"Warrior XP");
         body.addView(stats);
 
-        section("SMART TOOLS");
-        premiumAction(actions,"Fighter AI","Explain, solve, quiz and revise","AI",v->fighter());
-        premiumAction(actions,"Current Affairs","Daily, weekly and monthly updates","NEWS",v->page("Current Affairs"));
-        premiumAction(actions,"Mistake Book",mistakes.size()+" questions saved for revision","REVISE",v->mistakes());
+        section("CHOOSE YOUR EXAM");
+        LinearLayout exams=new LinearLayout(this); exams.setWeightSum(3);
+        premiumExam(exams,"SSC CGL","PRIMARY",true,v->topics("Maths"));
+        premiumExam(exams,"Railway","PRACTICE",false,v->topics("Reasoning"));
+        premiumExam(exams,"UP SI","PRACTICE",false,v->page("Study"));
+        body.addView(exams);
 
-        TextView loop=text("LEARN  →  PRACTICE  →  ANALYZE  →  IMPROVE",10,MUTED,true); loop.setGravity(Gravity.CENTER); loop.setPadding(0,18,0,10); body.addView(loop);
+        section("LEARNING HUB");
+        LinearLayout grid=new LinearLayout(this); grid.setOrientation(LinearLayout.VERTICAL);
+        premiumTile(grid,"Study Room","Concepts, formulas & lessons","STUDY",v->page("Study"));
+        premiumTile(grid,"Practice Arena","Speed, accuracy & smart practice","PRACTICE",v->practice());
+        premiumTile(grid,"PYQ Bank","Topic-wise previous year questions","PYQ",v->pyq());
+        premiumTile(grid,"Mock Tests","Full test + performance analysis","TEST",v->mock());
+        body.addView(grid);
+
+        LinearLayout ai=new LinearLayout(this); ai.setGravity(Gravity.CENTER_VERTICAL); ai.setPadding(17,15,14,15);
+        ai.setBackground(gradient(Color.rgb(25,39,67),Color.rgb(7,25,57),20)); ai.setElevation(4);
+        LinearLayout ac=new LinearLayout(this); ac.setOrientation(LinearLayout.VERTICAL);
+        ac.addView(text("FIGHTER AI",10,Color.rgb(205,218,237),true));
+        ac.addView(text("Your personal study partner",17,WHITE,true));
+        ac.addView(text("Explain • Solve • Quiz • Revise",10,Color.rgb(184,201,224),false));
+        ai.addView(ac,new LinearLayout.LayoutParams(0,64,1));
+        TextView go=iconBadge("OPEN",RED,WHITE); go.setOnClickListener(v->fighter()); ai.addView(go,new LinearLayout.LayoutParams(64,34));
+        LinearLayout.LayoutParams aip=new LinearLayout.LayoutParams(-1,-2);aip.setMargins(0,16,0,8);body.addView(ai,aip);
+
+        section("SMART REVISION");
+        premiumTile(body,"Current Affairs","Daily • Weekly • Monthly updates","NEWS",v->page("Current Affairs"));
+        premiumTile(body,"Mistake Book",mistakes.size()+" saved questions for revision","REVISE",v->mistakes());
+
+        TextView loop=text("LEARN   •   PRACTICE   •   ANALYZE   •   IMPROVE",9,MUTED,true); loop.setGravity(Gravity.CENTER);loop.setPadding(0,22,0,8);body.addView(loop);
+    }
+
+    void premiumStat(LinearLayout row,String label,String value,String sub){
+        LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(13,11,13,10);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),18));c.setElevation(1);
+        c.addView(text(value,19,NAVY,true));c.addView(text(label,8,RED,true));c.addView(text(sub,8,MUTED,false));
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,82,1);p.setMargins(3,0,3,0);row.addView(c,p);
+    }
+    void premiumTile(LinearLayout parent,String name,String desc,String tag,View.OnClickListener l){
+        LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(15,10,12,10);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),19));c.setElevation(1);c.setOnClickListener(l);
+        TextView mark=iconBadge(tag.substring(0,1),Color.rgb(238,242,248),NAVY);c.addView(mark,new LinearLayout.LayoutParams(38,38));
+        LinearLayout cp=new LinearLayout(this);cp.setOrientation(LinearLayout.VERTICAL);cp.setPadding(12,0,0,0);cp.addView(title(name,15));cp.addView(muted(desc,9));c.addView(cp,new LinearLayout.LayoutParams(0,58,1));
+        TextView ar=text("›",24,RED,false);ar.setGravity(Gravity.CENTER);c.addView(ar,new LinearLayout.LayoutParams(28,50));
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,72);p.setMargins(0,5,0,5);parent.addView(c,p);animateView(c,parent.getChildCount()*18);
     }
 
     void premiumExam(LinearLayout row,String name,String sub,boolean active,View.OnClickListener l){
