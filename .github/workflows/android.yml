@@ -1,5 +1,5 @@
 name: Build Warrior Aspirants APK
-# Fighter AI endpoint fix build trigger
+# Fighter AI diagnostic build trigger
 
 on:
   push:
