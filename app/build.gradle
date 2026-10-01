@@ -8,8 +8,8 @@ android {
         applicationId 'com.warrioraspirants.app'
         minSdk 23
         targetSdk 35
-        versionCode 3
-        versionName '1.2'
+        versionCode 4
+        versionName '1.3'
     }
 
     signingConfigs {
@@ -26,7 +26,7 @@ android {
 
     buildTypes {
         release {
-            if (System.getenv('WA_KEYSTORE_FILE') != null) {
+            if (System.getenv('WA_KEYSTORE_FILE') != null && !System.getenv('WA_KEYSTORE_FILE').isEmpty()) {
                 signingConfig signingConfigs.release
             }
             minifyEnabled false
