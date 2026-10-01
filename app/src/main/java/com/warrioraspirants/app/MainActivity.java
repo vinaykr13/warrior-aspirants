@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
         TextView search=text("⌕",29,NAVY,false);search.setGravity(Gravity.CENTER);search.setOnClickListener(v->toast("Search is ready — choose a topic from the Study tab."));bar.addView(search,new LinearLayout.LayoutParams(48,52));
         TextView more=text("⋮",27,NAVY,false);more.setGravity(Gravity.CENTER);more.setOnClickListener(v->telegramMenu());bar.addView(more,new LinearLayout.LayoutParams(38,52));body.addView(bar);
 
-        LinearLayout tabs=new LinearLayout(this);tabs.setGravity(Gravity.CENTER);tabs.setPadding(5,5,5,5);tabs.setBackground(WHITE);
+        LinearLayout tabs=new LinearLayout(this);tabs.setGravity(Gravity.CENTER);tabs.setPadding(5,5,5,5);tabs.setBackgroundColor(WHITE);
         String[] ts={"All","Study","CGL"};for(int i=0;i<3;i++){final int k=i;TextView t=text(ts[i],13,i==0?NAVY:MUTED,true);t.setGravity(Gravity.CENTER);t.setBackground(i==0?shape(Color.rgb(225,240,250),24):shape(WHITE,24));t.setOnClickListener(v->{if(k==1)page("Study");else if(k==2)topics("Maths");});tabs.addView(t,new LinearLayout.LayoutParams(0,40,1));}body.addView(tabs);
 
         section("TODAY'S MISSIONS");
@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
         chatRow("📕","Mistake Book",mistakes.size()+" saved questions • Revise","", "Open",v->mistakes());
         chatRow("🤖","Fighter AI","Explain • Solve • Quiz • Revise","", "Ask",v->fighter());
 
-        LinearLayout status=new LinearLayout(this);status.setGravity(Gravity.CENTER);status.setPadding(0,10,0,10);status.setBackground(WHITE);
+        LinearLayout status=new LinearLayout(this);status.setGravity(Gravity.CENTER);status.setPadding(0,10,0,10);status.setBackgroundColor(WHITE);
         status.addView(text("⚔ Level "+store.level()+"   •   "+store.xp()+" XP   •   🔥 "+Math.max(1,store.streak())+" day streak",11,NAVY,true));body.addView(status);
     }
 
@@ -127,6 +127,20 @@ public class MainActivity extends Activity {
         mid.addView(muted(subtitle,11));c.addView(mid,new LinearLayout.LayoutParams(0,64,1));
         TextView b=text(badge,10,WHITE,true);b.setGravity(Gravity.CENTER);b.setBackground(shape(Color.rgb(180,188,195),18));c.addView(b,new LinearLayout.LayoutParams(48,30));
         LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,70);p.setMargins(0,1,0,1);body.addView(c,p);animateView(c,body.getChildCount()*8);c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
+    }
+
+    void telegramMenu(){
+        body.removeAllViews(); topTitle("Menu");
+        section("WARRIOR ASPIRANTS");
+        action("⌂  Home",v->page("Home"));
+        action("📚  Study Room",v->page("Study"));
+        action("⚡  Practice Arena",v->page("Practice"));
+        action("📖  PYQ Bank",v->pyq());
+        action("📰  Current Affairs",v->page("Current Affairs"));
+        action("📕  Mistake Book",v->mistakes());
+        action("🤖  Fighter AI",v->fighter());
+        action("👤  Profile",v->page("Profile"));
+        action("⚙️  Settings",v->settings());
     }
 
     void gridRow(LinearLayout parent,String[] labels,View.OnClickListener[] ls){
