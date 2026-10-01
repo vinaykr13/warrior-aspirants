@@ -1,15 +1,12 @@
 name: warrior_aspirant
-description: Warrior Aspirant - SSC CGL, Railway, UP SI and UPSSSC PET preparation app.
+description: Premium SSC CGL preparation dashboard for Warrior Aspirant.
 publish_to: "none"
-version: 1.7.0+8
+version: 1.6.0+7
 environment:
   sdk: ">=3.5.0 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
-  file_picker: ^8.1.2
-  share_plus: ^10.1.2
-  url_launcher: ^6.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
