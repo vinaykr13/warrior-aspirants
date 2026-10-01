@@ -2,12 +2,17 @@ package com.warrioraspirants.app;
 
 import android.app.*;
 import android.os.*;
+import android.content.*;
+import android.net.Uri;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
+import java.io.*;
+import java.net.*;
+import org.json.*;
 
 public class MainActivity extends Activity {
     final int NAVY=Color.rgb(7,25,57), NAVY2=Color.rgb(16,44,86), RED=Color.rgb(204,42,50);
@@ -261,9 +266,9 @@ public class MainActivity extends Activity {
             hero("PRACTICE ARENA","Train your speed & accuracy","10 / 20 / 50 questions • Timer • Analysis",v->practice());
             action("⚡  Quick Practice — 10 Questions",v->practice());action("🎯  Topic Practice",v->topics("Practice Topics"));action("📚  PYQ Engine",v->pyq());action("🏆  Mock Test",v->mock());action("📕  Mistake Book",v->mistakes());
         } else if(p.equals("Current Affairs")){
-            section("CURRENT AFFAIRS");action("📅  Today",v->ca("Today's Current Affairs"));action("Yesterday",v->ca("Yesterday"));action("📚  Weekly",v->ca("Weekly Revision"));action("🗓  Monthly One-Liners",v->ca("Monthly One-Liners"));action("❓  Current Affairs Quiz",v->ca("Current Affairs Quiz"));
+            section("CURRENT AFFAIRS");action("📅 Today — Live",v->openUrl("https://news.google.com/rss/search?q=India%20current%20affairs%20when:1d"));action("Yesterday — Live",v->openUrl("https://news.google.com/rss/search?q=India%20current%20affairs%20when:2d"));action("📚 Weekly",v->openUrl("https://news.google.com/rss/search?q=India%20current%20affairs%20when:7d"));action("🗓 Monthly",v->openUrl("https://www.google.com/search?q=India+monthly+current+affairs"));action("❓ Current Affairs Quiz",v->practiceTopic("Current Affairs"));
         } else {
-            profileHeader();action("📊  Progress",v->progress());action("🕘  History",v->toast("History will show completed lessons and tests."));action("🔖  Bookmarks",v->toast("Bookmarks ready for saved content."));action("⚙️  Settings",v->settings());
+            profileHeader();action("📊 Progress",v->progress());action("🕘 History",v->history());action("🔖 Bookmarks",v->bookmarks());action("📤 Share App",v->shareApp());action("📄 Upload Study PDF",v->pickPdf());action("⚙️ Settings",v->settings());
         }
     }
 
@@ -320,9 +325,20 @@ public class MainActivity extends Activity {
     void pyqTopic(String t){body.removeAllViews();topTitle("PYQ • "+t);card("PREVIOUS YEAR","Verified question bank","Options • Correct answer • Detailed explanation");action("▶  Start Topic PYQ",v->practiceTopic(t));action("←  Back",v->pyq());}
     void mock(){body.removeAllViews();topTitle("Mock Test");hero("FULL MOCK","SSC CGL Tier 1 & 2","Timer • Section analysis • Accuracy • Mistakes",v->practiceTopic("Mock Test"));action("🏆  Start Mock",v->practiceTopic("Mock Test"));action("←  Back",v->page("Practice"));}
     void mistakes(){body.removeAllViews();topTitle("Mistake Book");if(mistakes.size()==0)card("EMPTY","No mistakes saved yet","Wrong questions will appear here.");else for(String m:mistakes)card("REVISE",m,"Retry → understand → improve");action("←  Back",v->page("Practice"));}
-    void fighter(){body.removeAllViews();topTitle("Fighter AI");hero("YOUR STUDY PARTNER","Explain • Solve • Quiz • Revise","Ask in simple Hindi / Hinglish.",v->toast("Type your question below"));EditText e=new EditText(this);e.setHint("Explain this question...");e.setTextSize(14);e.setPadding(15,0,15,0);e.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));body.addView(e,new LinearLayout.LayoutParams(-1,54));action("Send  →",v->toast("Fighter AI backend can be connected later."));}
+    void fighter(){body.removeAllViews();topTitle("Fighter AI");hero("YOUR STUDY PARTNER","Explain • Solve • Quiz • Revise","Ask in simple Hindi / Hinglish.",v->toast("Type your question below"));EditText e=new EditText(this);e.setHint("Explain this question...");e.setTextSize(14);e.setPadding(15,0,15,0);e.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));body.addView(e,new LinearLayout.LayoutParams(-1,54));action("Send  →",v->sendFighter(e));action("🔑 Set Gemini API Key",v->setGeminiKey());}
     void ca(String s){body.removeAllViews();topTitle(s);card("CURRENT AFFAIRS","Fresh verified updates","Facts should be dated and sourced.");action("←  Back",v->page("Current Affairs"));}
     void settings(){body.removeAllViews();topTitle("Settings");card("TARGET EXAMS","SSC CGL 2027","Railway • UP SI");card("DAILY TARGET","2 hours","Personalised planner can be expanded.");action("🗑  Reset saved progress",v->{new AlertDialog.Builder(this).setTitle("Reset progress?").setMessage("XP, solved questions and Mistake Book will be cleared.").setNegativeButton("Cancel",null).setPositiveButton("Reset",(d,w)->{getSharedPreferences("warrior_progress",MODE_PRIVATE).edit().clear().apply();store=new ProgressStore(this);mistakes=store.mistakes();toast("Progress reset");page("Profile");}).show();});}
     void progress(){body.removeAllViews();topTitle("Progress");card("LEVEL "+store.level(),"XP "+store.xp(),"Preparation "+store.prep()+"% • Accuracy "+store.accuracy()+"% • Streak "+store.streak()+" days");card("LEARNING LOOP","Learn → Practice → Analyze → Improve","Progress is saved on this device.");}
+    void openUrl(String u){try{startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(u)));}catch(Exception e){toast("Link open नहीं हुआ.");}}
+    void shareApp(){Intent i=new Intent(Intent.ACTION_SEND);i.setType("text/plain");i.putExtra(Intent.EXTRA_TEXT,"Warrior Aspirants — SSC CGL, Railway, UP SI & UPSSSC PET preparation app.");startActivity(Intent.createChooser(i,"Share Warrior Aspirants"));}
+    void pickPdf(){Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("*/*");i.addCategory(Intent.CATEGORY_OPENABLE);try{startActivityForResult(i,7001);}catch(Exception e){toast("File picker unavailable.");}}
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){super.onActivityResult(requestCode,resultCode,data);if(requestCode==7001&&resultCode==RESULT_OK&&data!=null&&data.getData()!=null){getPreferences(MODE_PRIVATE).edit().putString("last_pdf",data.getData().toString()).apply();toast("Study file selected.");}}
+    void history(){body.removeAllViews();topTitle("History");card("LEARNING HISTORY","Saved locally","Solved questions and XP are stored on this device.");card("SOLVED",""+store.solved(),"Correct: "+store.correct()+" • Accuracy: "+store.accuracy()+"%");action("📊 View Progress",v->progress());}
+    void bookmarks(){body.removeAllViews();topTitle("Bookmarks");String saved=getPreferences(MODE_PRIVATE).getString("bookmark_topic","");if(saved.length()==0)card("EMPTY","No bookmark yet","Save any topic for quick revision.");else{card("SAVED TOPIC",saved,"Resume this lesson.");action("▶ Open "+saved,v->lesson(saved));}action("📚 Number System",v->saveBookmark("Number System"));action("📚 Percentage",v->saveBookmark("Percentage"));}
+    void saveBookmark(String t){getPreferences(MODE_PRIVATE).edit().putString("bookmark_topic",t).apply();toast("Bookmarked: "+t);}
+    void setGeminiKey(){final EditText e=new EditText(this);e.setHint("Paste Gemini API key");e.setSingleLine(true);e.setText(getPreferences(MODE_PRIVATE).getString("gemini_key",""));new AlertDialog.Builder(this).setTitle("Fighter AI API Key").setMessage("Key is stored locally on this device.").setView(e).setNegativeButton("Cancel",null).setPositiveButton("Save",(d,w)->{getPreferences(MODE_PRIVATE).edit().putString("gemini_key",e.getText().toString().trim()).apply();toast("API key saved.");}).show();}
+    void sendFighter(EditText input){String q=input.getText().toString().trim();if(q.length()==0){toast("Question लिखें.");return;}String key=getPreferences(MODE_PRIVATE).getString("gemini_key","");if(key.length()==0){setGeminiKey();return;}toast("Fighter is thinking…");new Thread(()->{try{URL u=new URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+URLEncoder.encode(key,"UTF-8"));HttpURLConnection c=(HttpURLConnection)u.openConnection();c.setRequestMethod("POST");c.setRequestProperty("Content-Type","application/json");c.setConnectTimeout(15000);c.setReadTimeout(30000);c.setDoOutput(true);JSONObject part=new JSONObject();part.put("text","You are Fighter AI, an exam tutor. Explain in simple Hindi/Hinglish step by step. User: "+q);JSONObject bodyJ=new JSONObject();bodyJ.put("contents",new JSONArray().put(new JSONObject().put("parts",new JSONArray().put(part))));try(OutputStream os=c.getOutputStream()){os.write(bodyJ.toString().getBytes("UTF-8"));}int code=c.getResponseCode();InputStream is=code>=200&&code<300?c.getInputStream():c.getErrorStream();StringBuilder out=new StringBuilder();try(BufferedReader br=new BufferedReader(new InputStreamReader(is))){String line;while((line=br.readLine())!=null)out.append(line);}String ans="Fighter response unavailable.";if(code>=200&&code<300){JSONObject j=new JSONObject(out.toString());ans=j.getJSONArray("candidates").getJSONObject(0).getJSONObject("content").getJSONArray("parts").getJSONObject(0).getString("text");}final String a=ans;runOnUiThread(()->showAnswer(a));}catch(Exception e){runOnUiThread(()->toast("Fighter API/network error."));}}).start();}
+    void showAnswer(String a){new AlertDialog.Builder(this).setTitle("Fighter AI").setMessage(a).setPositiveButton("OK",null).show();}
+    void vacancies(){body.removeAllViews();topTitle("Vacancies & Updates");card("RECRUITMENT HUB","Official sources","Verify dates and eligibility on the notice.");action("🏛 SSC Official",v->openUrl("https://ssc.gov.in/"));action("🚆 Railway / RRB",v->openUrl("https://www.rrbcdg.gov.in/"));action("🟢 UPSSSC",v->openUrl("https://upsssc.gov.in/"));action("👮 UP Police",v->openUrl("https://uppbpb.gov.in/"));action("← Back",v->page("Home"));}
     void toast(String s){Toast.makeText(this,s,Toast.LENGTH_SHORT).show();}
 }
