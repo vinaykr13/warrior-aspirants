@@ -87,61 +87,46 @@ public class MainActivity extends Activity {
     }
 
     void homeContent(){
-        LinearLayout top=new LinearLayout(this);top.setOrientation(LinearLayout.HORIZONTAL);top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(4,10,4,8);top.setBackgroundColor(NAVY);
-        Button menu=new Button(this);menu.setText("☰");menu.setTextColor(WHITE);menu.setTextSize(22);menu.setAllCaps(false);menu.setBackgroundColor(Color.TRANSPARENT);menu.setOnClickListener(v->telegramMenu());
-        top.addView(menu,new LinearLayout.LayoutParams(52,52));
-        LinearLayout names=new LinearLayout(this);names.setOrientation(LinearLayout.VERTICAL);names.addView(text("WARRIOR ASPIRANTS",17,WHITE,true));names.addView(text("Study • Practice • Achieve",10,Color.rgb(190,204,228),false));
-        top.addView(names,new LinearLayout.LayoutParams(0,54,1));
-        TextView search=text("⌕",27,WHITE,false);search.setGravity(Gravity.CENTER);top.addView(search,new LinearLayout.LayoutParams(48,52));
-        body.addView(top);
-        TextView welcome=text("Welcome, Warrior! ⚔",22,DARK,true);welcome.setPadding(4,16,4,8);body.addView(welcome);
-        LinearLayout searchRow=new LinearLayout(this);searchRow.setGravity(Gravity.CENTER_VERTICAL);searchRow.setPadding(12,0,8,0);searchRow.setBackground(shape(WHITE,16));
-        searchRow.addView(text("⌕",23,MUTED,false),new LinearLayout.LayoutParams(34,48));searchRow.addView(muted("Search lessons, PYQs, topics...",13),new LinearLayout.LayoutParams(0,48,1));searchRow.addView(text("☷",20,RED,true),new LinearLayout.LayoutParams(38,48));
-        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,50);sp.setMargins(0,2,0,10);body.addView(searchRow,sp);
-        LinearLayout chips=new LinearLayout(this);
-        String[] exams={"SSC CGL","Railway","UP SI"};for(int i=0;i<3;i++){TextView c=chip(exams[i],i==0);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,36);cp.setMargins(0,0,7,0);chips.addView(c,cp);}
-        body.addView(chips);
-        section("TODAY");
-        listRow("📚","Continue Learning","Maths • Number System","Resume where you stopped",v->lesson("Number System"));
-        listRow("⚡","Practice Questions","10 questions","Improve speed & accuracy",v->practice());
-        listRow("🏆","Mock Test","SSC CGL Tier 1","Full test • Timer • Analysis",v->mock());
-        section("STUDY");
-        listRow("📐","Maths","12 topics available","Basic → Advanced",v->topics("Maths"));
-        listRow("🧠","Reasoning","8 topics available","Concepts → Practice",v->topics("Reasoning"));
-        listRow("🔤","English","8 topics available","Grammar → PYQs",v->topics("English"));
-        listRow("🌍","GK / GS","7 topics available","Static + Science",v->topics("GK / GS"));
-        section("TOOLS");
-        listRow("📚","PYQ Bank","SSC CGL • Railway • UP SI","Year • Shift • Topic",v->pyq());
-        listRow("📰","Current Affairs","Daily • Weekly • Monthly","Fresh verified updates",v->page("Current Affairs"));
-        listRow("📕","Mistake Book",mistakes.size()+" saved questions","Revise your weak points",v->mistakes());
-        listRow("🤖","Fighter AI","Explain • Solve • Quiz","Your study partner",v->fighter());
-        TextView p=text("⚔ "+store.xp()+" XP   •   Level "+store.level()+"   •   Accuracy "+store.accuracy()+"%",11,RED,true);p.setGravity(Gravity.CENTER);p.setPadding(0,15,0,15);body.addView(p);
+        LinearLayout bar=new LinearLayout(this);bar.setOrientation(LinearLayout.HORIZONTAL);bar.setGravity(Gravity.CENTER_VERTICAL);bar.setPadding(6,8,6,8);bar.setBackgroundColor(WHITE);
+        TextView menu=text("☰",27,NAVY,false);menu.setGravity(Gravity.CENTER);menu.setOnClickListener(v->telegramMenu());bar.addView(menu,new LinearLayout.LayoutParams(50,52));
+        ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.warrior_icon);logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);bar.addView(logo,new LinearLayout.LayoutParams(48,48));
+        LinearLayout name=new LinearLayout(this);name.setOrientation(LinearLayout.VERTICAL);name.setPadding(8,0,0,0);name.addView(text("Warrior Aspirants",19,NAVY,true));name.addView(text("SSC CGL • Railway • UP SI",10,MUTED,false));bar.addView(name,new LinearLayout.LayoutParams(0,56,1));
+        TextView search=text("⌕",29,NAVY,false);search.setGravity(Gravity.CENTER);search.setOnClickListener(v->toast("Search is ready — choose a topic from the Study tab."));bar.addView(search,new LinearLayout.LayoutParams(48,52));
+        TextView more=text("⋮",27,NAVY,false);more.setGravity(Gravity.CENTER);more.setOnClickListener(v->telegramMenu());bar.addView(more,new LinearLayout.LayoutParams(38,52));body.addView(bar);
+
+        LinearLayout tabs=new LinearLayout(this);tabs.setGravity(Gravity.CENTER);tabs.setPadding(5,5,5,5);tabs.setBackground(WHITE);
+        String[] ts={"All","Study","CGL"};for(int i=0;i<3;i++){final int k=i;TextView t=text(ts[i],13,i==0?NAVY:MUTED,true);t.setGravity(Gravity.CENTER);t.setBackground(i==0?shape(Color.rgb(225,240,250),24):shape(WHITE,24));t.setOnClickListener(v->{if(k==1)page("Study");else if(k==2)topics("Maths");});tabs.addView(t,new LinearLayout.LayoutParams(0,40,1));}body.addView(tabs);
+
+        section("TODAY'S MISSIONS");
+        chatRow("📐","Maths — Number System","Continue learning • "+store.prep()+"% preparation","Today",store.accuracy()+"%",v->lesson("Number System"));
+        chatRow("🧠","Reasoning — Series","8 topics • Practice available","Today","8",v->lesson("Series"));
+        chatRow("🔤","English — Tenses","Grammar • Examples • PYQs","Today","8",v->lesson("Tenses"));
+
+        section("EXAM ROOMS");
+        chatRow("🔴","SSC CGL","Study • PYQs • Mock Tests","",store.xp()+" XP",v->topics("Maths"));
+        chatRow("🚆","Railway","Study • Practice • PYQs","", "Open",v->topics("Reasoning"));
+        chatRow("🟢","UP SI","Study • Current Affairs • Practice","", "Open",v->page("Study"));
+
+        section("WARRIOR TOOLS");
+        chatRow("⚡","Practice Arena","10 / 20 / 50 questions • Timer","", "Start",v->practice());
+        chatRow("📚","PYQ Bank","Exam • Year • Topic • Solution","", "Open",v->pyq());
+        chatRow("🏆","Mock Tests","Full test • Analysis • Accuracy","", "Start",v->mock());
+        chatRow("📰","Current Affairs","Daily • Weekly • Monthly","", "Open",v->page("Current Affairs"));
+        chatRow("📕","Mistake Book",mistakes.size()+" saved questions • Revise","", "Open",v->mistakes());
+        chatRow("🤖","Fighter AI","Explain • Solve • Quiz • Revise","", "Ask",v->fighter());
+
+        LinearLayout status=new LinearLayout(this);status.setGravity(Gravity.CENTER);status.setPadding(0,10,0,10);status.setBackground(WHITE);
+        status.addView(text("⚔ Level "+store.level()+"   •   "+store.xp()+" XP   •   🔥 "+Math.max(1,store.streak())+" day streak",11,NAVY,true));body.addView(status);
     }
 
-    void listRow(String icon,String titleText,String line1,String line2,View.OnClickListener l){
-        LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(10,6,8,6);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));c.setOnClickListener(l);
-        TextView ic=text(icon,23,RED,true);ic.setGravity(Gravity.CENTER);c.addView(ic,new LinearLayout.LayoutParams(48,58));
-        LinearLayout mid=new LinearLayout(this);mid.setOrientation(LinearLayout.VERTICAL);mid.setPadding(8,0,5,0);mid.addView(title(titleText,15));mid.addView(muted(line1,10));mid.addView(muted(line2,9));c.addView(mid,new LinearLayout.LayoutParams(0,66,1));
-        TextView arrow=text("›",28,RED,false);arrow.setGravity(Gravity.CENTER);c.addView(arrow,new LinearLayout.LayoutParams(34,66));
-        c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
-        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,74);p.setMargins(0,3,0,3);body.addView(c,p);animateView(c,body.getChildCount()*12);
-    }
-
-    void telegramMenu(){
-        body.removeAllViews();
-        LinearLayout head=new LinearLayout(this);head.setOrientation(LinearLayout.VERTICAL);head.setPadding(18,20,18,18);head.setBackground(NAVY==0?shape(NAVY,0):shape(NAVY,0));
-        head.addView(text("WARRIOR ASPIRANTS",20,WHITE,true));head.addView(text("SSC CGL 2027 • Railway • UP SI",11,Color.rgb(205,215,235),false));body.addView(head);
-        section("MENU");
-        listRow("⌂","Home","Dashboard","Today's mission",v->page("Home"));
-        listRow("📚","Study Room","Maths • Reasoning • English • GK/GS","Learn concepts",v->page("Study"));
-        listRow("⚡","Practice Arena","Quick practice • Topic practice","Build speed",v->page("Practice"));
-        listRow("📖","PYQ Bank","Previous year questions","Exam • Year • Topic",v->pyq());
-        listRow("📰","Current Affairs","Daily • Weekly • Monthly","Stay updated",v->page("Current Affairs"));
-        listRow("📕","Mistake Book",mistakes.size()+" saved","Revise mistakes",v->mistakes());
-        listRow("🤖","Fighter AI","Explain • Solve • Quiz","Ask your doubt",v->fighter());
-        listRow("👤","Profile","Progress • History • Settings","Your account",v->page("Profile"));
-        action("←  Back to Home",v->page("Home"));
+    void chatRow(String icon,String titleText,String subtitle,String time,String badge,View.OnClickListener l){
+        LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(9,5,7,5);c.setBackgroundColor(WHITE);c.setOnClickListener(l);
+        TextView av=text(icon,24,RED,true);av.setGravity(Gravity.CENTER);av.setBackground(shape(Color.rgb(245,247,250),28));c.addView(av,new LinearLayout.LayoutParams(52,58));
+        LinearLayout mid=new LinearLayout(this);mid.setOrientation(LinearLayout.VERTICAL);mid.setPadding(10,0,4,0);
+        LinearLayout line=new LinearLayout(this);line.setGravity(Gravity.CENTER_VERTICAL);line.addView(title(titleText,15),new LinearLayout.LayoutParams(0,25,1));if(!time.isEmpty())line.addView(muted(time,10));mid.addView(line);
+        mid.addView(muted(subtitle,11));c.addView(mid,new LinearLayout.LayoutParams(0,64,1));
+        TextView b=text(badge,10,WHITE,true);b.setGravity(Gravity.CENTER);b.setBackground(shape(Color.rgb(180,188,195),18));c.addView(b,new LinearLayout.LayoutParams(48,30));
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,70);p.setMargins(0,1,0,1);body.addView(c,p);animateView(c,body.getChildCount()*8);c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
     }
 
     void gridRow(LinearLayout parent,String[] labels,View.OnClickListener[] ls){
@@ -154,9 +139,9 @@ public class MainActivity extends Activity {
     View floatingFighter(){Button b=new Button(this);b.setText("🤖  Fighter AI");b.setTextColor(WHITE);b.setTextSize(13);b.setAllCaps(false);b.setBackground(shape(NAVY,25));b.setElevation(6);b.setOnClickListener(v->fighter());return b;}
 
     View bottomNav(){
-        LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);nav.setPadding(5,5,5,5);nav.setBackgroundColor(WHITE);nav.setElevation(12);
-        String[] a={"⌂\nHome","▣\nStudy","⚡\nPractice","◷\nCurrent","◉\nProfile"};
-        String[] pages={"Home","Study","Practice","Current Affairs","Profile"};
+        LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);nav.setPadding(4,3,4,3);nav.setBackgroundColor(WHITE);nav.setElevation(14);
+        String[] a={"💬\nChats","📚\nStudy","⚡\nPractice","◉\nProfile"};
+        String[] pages={"Home","Study","Practice","Profile"};
         for(int i=0;i<a.length;i++){final String p=pages[i];TextView b=text(a[i],10,NAVY,true);b.setGravity(Gravity.CENTER);b.setOnClickListener(v->page(p));b.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});nav.addView(b,new LinearLayout.LayoutParams(0,58,1));}
         return nav;
     }
