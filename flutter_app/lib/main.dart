@@ -1,5 +1,8 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const WarriorAspirantApp());
 
@@ -271,9 +274,7 @@ class ArsenalGrid extends StatelessWidget {
     itemBuilder: (context, index) {
       final subject = subjects[index];
       return PressableScale(
-        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(subject.name), behavior: SnackBarBehavior.floating),
-        ),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SimplePage(title: subject.name, subtitle: 'Theory + Practice', icon: subject.icon))),
         child: Container(
           padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
@@ -338,9 +339,7 @@ class MegaMockCard extends StatelessWidget {
       ]),
       const SizedBox(height: 18),
       GlowingTestButton(onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mega Mock Battle is ready!'), behavior: SnackBarBehavior.floating),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const SimplePage(title: 'CGL Tier-1 Mega Mock', subtitle: '100 Questions • 60 Minutes', icon: Icons.timer)));
       }),
     ]),
   );
@@ -493,40 +492,102 @@ class PremiumBottomNav extends StatelessWidget {
   );
 }
 
-class SimplePage extends StatelessWidget {
-  final String title, subtitle;
-  final IconData icon;
-  const SimplePage({super.key, required this.title, required this.subtitle, required this.icon});
-
-  @override
-  Widget build(BuildContext context) => SafeArea(
-    child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(28),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 70, height: 70,
-              decoration: BoxDecoration(
-                color: AppColors.gold.withValues(alpha: .12),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Icon(icon, color: AppColors.gold, size: 34),
-            ),
-            const SizedBox(height: 18),
-            Text(title, style: const TextStyle(color: AppColors.white, fontSize: 24, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 7),
-            Text(subtitle, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.muted, fontSize: 13)),
-          ]),
-        ),
-      ),
-    ),
-  );
+class SimplePage extends StatefulWidget {
+  final String title, subtitle; final IconData icon;
+  const SimplePage({super.key,required this.title,required this.subtitle,required this.icon});
+  @override State<SimplePage> createState()=>_SimplePageState();
+}
+class _SimplePageState extends State<SimplePage>{
+  String? fileName; int answer=-1;
+  final pet=[
+    ['भारतीय इतिहास','5 प्रश्न • 5 अंक','सिन्धु घाटी सभ्यता; वैदिक संस्कृति; बौद्ध धर्म; जैन धर्म; मौर्य वंश; अशोक; गुप्त वंश; समुद्रगुप्त; चन्द्रगुप्त द्वितीय; हर्षवर्धन; राजपूत; सल्तनत; मुगल; मराठा; ब्रिटिश राज; प्रथम स्वतंत्रता संग्राम; सामाजिक एवं आर्थिक प्रभाव।'],
+    ['भारतीय राष्ट्रीय आन्दोलन','5 प्रश्न • 5 अंक','प्रारम्भिक आन्दोलन; स्वदेशी; सविनय अवज्ञा; महात्मा गांधी; क्रान्तिकारी आन्दोलन; उग्र राष्ट्रवाद; भारत सरकार अधिनियम 1935; भारत छोड़ो; आजाद हिन्द फौज; सुभाष चन्द्र बोस।'],
+    ['भूगोल','5 प्रश्न • 5 अंक','भारत/विश्व का भौतिक व राजनीतिक भूगोल; नदियाँ; नदी घाटियाँ; भूजल; पर्वत; पहाड़ियाँ; हिमनद; मरुस्थल; वन; खनिज; जलवायु; मौसम; टाइम ज़ोन; जनसांख्यिकी; प्रवासन।'],
+    ['भारतीय अर्थव्यवस्था','5 प्रश्न • 5 अंक','1947–1991 अर्थव्यवस्था; योजना आयोग; पंचवर्षीय योजनाएँ; मिश्रित अर्थव्यवस्था; हरित क्रान्ति; ऑपरेशन फ्लड; बैंक राष्ट्रीयकरण; 1991 सुधार; 2014 के बाद कृषि, ढांचागत व श्रम सुधार; GST।'],
+    ['भारतीय संविधान एवं लोक प्रशासन','5 प्रश्न • 5 अंक','संविधान; नीति-निर्देशक तत्व; मौलिक अधिकार/कर्तव्य; संसदीय प्रणाली; संघीय प्रणाली; संघ/UT; केन्द्र-राज्य सम्बन्ध; सर्वोच्च/उच्च न्यायालय; जिला प्रशासन; स्थानीय निकाय; पंचायती राज।'],
+    ['सामान्य विज्ञान','5 प्रश्न • 5 अंक','प्रारम्भिक Physics; Chemistry; Biology।'],
+    ['प्रारम्भिक अंकगणित','5 प्रश्न • 5 अंक','पूर्ण संख्याएँ; भिन्न/दशमलव; प्रतिशतता; साधारण समीकरण; वर्ग/वर्गमूल; घातांक/घात; औसत।'],
+    ['सामान्य हिन्दी','5 प्रश्न • 5 अंक','संधि; विलोम; पर्यायवाची; एक शब्द; लिंग; समश्रुत भिन्नार्थक शब्द; मुहावरे/लोकोक्तियाँ; अशुद्धियाँ; लेखक एवं रचनाएँ।'],
+    ['सामान्य अंग्रेजी','5 प्रश्न • 5 अंक','English Grammar; Unseen Passage।'],
+    ['तर्क एवं तर्कशक्ति','5 प्रश्न • 5 अंक','बड़ा/छोटा; क्रम/रैंकिंग; सम्बन्ध; odd-one-out; कैलेंडर/घड़ी; कारण-प्रभाव; Coding-Decoding; कथन विश्लेषण; निष्कर्ष।'],
+    ['समसामयिकी','10 प्रश्न • 10 अंक','भारतीय और वैश्विक समसामयिकी; date-wise, weekly और monthly revision।'],
+    ['सामान्य जागरूकता','10 प्रश्न • 10 अंक','पड़ोसी देश; देश-राजधानी-मुद्रा; राज्य/UT; संसद; महत्वपूर्ण दिवस; विश्व संगठन/मुख्यालय; पर्यटन; कला-संस्कृति; खेल; अनुसंधान संगठन; पुस्तक-लेखक; पुरस्कार; जलवायु/पर्यावरण।'],
+    ['हिन्दी अपठित गद्यांश','10 प्रश्न • 10 अंक','2 अपठित हिन्दी गद्यांश; प्रत्येक पर 5 प्रश्न; आशय, तथ्य, शब्दार्थ और निष्कर्ष।'],
+    ['ग्राफ की व्याख्या एवं विश्लेषण','10 प्रश्न • 10 अंक','2 ग्राफ; प्रत्येक पर 5 प्रश्न; data reading, comparison और conclusion।'],
+    ['तालिका की व्याख्या एवं विश्लेषण','10 प्रश्न • 10 अंक','2 तालिकाएँ; प्रत्येक पर 5 प्रश्न; rows/columns, comparison और conclusion।']
+  ];
+  final subjects={
+    'Quantitative Maths':['Number System','Percentage','Ratio & Proportion','Profit & Loss','Average','Time & Work','Time Speed Distance','Algebra','Geometry','Mensuration','Trigonometry','Data Interpretation'],
+    'Reasoning Ability':['Analogy','Classification','Series','Coding-Decoding','Blood Relation','Direction','Ranking','Syllogism','Venn Diagram','Clock & Calendar','Statement & Conclusion','Non-Verbal Reasoning'],
+    'English Comprehension':['Parts of Speech','Tenses','Subject Verb Agreement','Articles','Prepositions','Voice','Narration','Error Detection','Cloze Test','Reading Comprehension','Synonyms & Antonyms','One Word Substitution'],
+    'General Awareness':['History','Geography','Polity','Economy','Science','Static GK','Art & Culture','Sports','Books & Authors','Awards','Environment','Current Affairs']
+  };
+  @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text(widget.title),backgroundColor:AppColors.navy),body:body());
+  Widget body(){
+    if(widget.title=='UPSSSC PET')return petPage();
+    if(widget.title=='Notes & PDFs')return notesPage();
+    if(widget.title=='Fighter AI')return fighterPage();
+    if(widget.title=='Videos')return videosPage();
+    if(widget.title=='Current Affairs'||widget.title=='Vacancies & Updates')return updatesPage();
+    if(widget.title=='PYQ Bank'||widget.title.contains('Mock')||widget.title.contains('Practice')||widget.title.contains('Challenge')||widget.title=='Subject Test')return quizPage();
+    return studyPage();
+  }
+  Widget studyPage()=>ListView(padding:const EdgeInsets.all(16),children:[
+    const Text('Basic → Advanced',style:TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
+    const Text('Theory • formulas • examples • important topics • memory tricks • PYQs',style:TextStyle(color:AppColors.muted)),
+    const SizedBox(height:14),
+    for(final e in subjects.entries)Card(color:AppColors.surface,child:ExpansionTile(title:Text(e.key,style:const TextStyle(color:AppColors.white,fontWeight:FontWeight.w800)),children:[
+      for(final t in e.value)ListTile(title:Text(t,style:const TextStyle(color:AppColors.white)),subtitle:const Text('Theory + example + shortcut + PYQ + practice',style:TextStyle(color:AppColors.muted,fontSize:10)),onTap:()=>lesson(t))
+    ]))
+  ]);
+  void lesson(String t)=>showModalBottomSheet(context:context,backgroundColor:AppColors.surface,builder:(_)=>Padding(padding:const EdgeInsets.all(20),child:Column(mainAxisSize:MainAxisSize.min,crossAxisAlignment:CrossAxisAlignment.start,children:[
+    Text(t,style:const TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),const SizedBox(height:12),
+    const Text('THEORY',style:TextStyle(color:AppColors.cyan,fontWeight:FontWeight.w900)),
+    Text(t+' को basic से advanced तक पढ़ें: definition → rule/formula → solved example → shortcut → PYQ → practice.',style:const TextStyle(color:AppColors.white,height:1.5)),
+    const SizedBox(height:12),const Text('IMPORTANT',style:TextStyle(color:AppColors.orange,fontWeight:FontWeight.w900)),
+    const Text('Frequently tested concepts, common traps और revision points को mark करके दोबारा करें.',style:TextStyle(color:AppColors.muted)),const SizedBox(height:12)
+  ])));
+  Widget petPage()=>ListView(padding:const EdgeInsets.all(14),children:[
+    const Text('UPSSSC PET — Complete Syllabus',style:TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
+    const Text('15/15 sections • theory • important topics • practice',style:TextStyle(color:AppColors.muted)),const SizedBox(height:10),
+    for(int i=0;i<pet.length;i++)Card(color:AppColors.surface,child:ExpansionTile(title:Text((i+1).toString()+'. '+pet[i][0],style:const TextStyle(color:AppColors.white,fontWeight:FontWeight.w800)),subtitle:Text(pet[i][1],style:const TextStyle(color:AppColors.gold,fontSize:10)),children:[
+      Padding(padding:const EdgeInsets.all(15),child:Text(pet[i][2],style:const TextStyle(color:AppColors.white,height:1.5)))
+    ]))
+  ]);
+  Widget quizPage(){
+    final qs=[['15 का 20% कितना है?',['2','3','4','5'],'3'],['यदि 3x=21, x=?',['5','6','7','8'],'7'],['भारत का संविधान कब लागू हुआ?',['1947','1949','1950','1952'],'1950']];
+    final q=qs[DateTime.now().second%qs.length]; final options=q[1] as List<String>;
+    return ListView(padding:const EdgeInsets.all(18),children:[
+      Text(widget.title,style:const TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
+      const Text('Practice/PYQ engine • answer • explanation • progress',style:TextStyle(color:AppColors.muted)),const SizedBox(height:18),
+      Card(color:AppColors.surface,child:Padding(padding:const EdgeInsets.all(14),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+        Text(q[0] as String,style:const TextStyle(color:AppColors.white,fontSize:19,fontWeight:FontWeight.w800)),
+        for(int i=0;i<options.length;i++)RadioListTile<int>(value:i,groupValue:answer,onChanged:(v)=>setState(()=>answer=v!),activeColor:AppColors.gold,title:Text(options[i],style:const TextStyle(color:AppColors.white))),
+        if(answer>=0)Text(answer==options.indexOf(q[2] as String)?'✓ Correct — concept applied correctly.':'✗ Correct answer: '+q[2],style:TextStyle(color:answer==options.indexOf(q[2] as String)?Colors.green:AppColors.orange,fontWeight:FontWeight.w800)),
+        const SizedBox(height:8),ElevatedButton(onPressed:answer<0?null:(){setState(()=>answer=-1);},child:const Text('SUBMIT & CONTINUE'))
+      ]))
+    ]);
+  }
+  Widget notesPage()=>ListView(padding:const EdgeInsets.all(18),children:[
+    const Text('Notes & PDFs',style:TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
+    const Text('Upload PDF/notes for your study workflow.',style:TextStyle(color:AppColors.muted)),const SizedBox(height:18),
+    ElevatedButton.icon(onPressed:pickFile,icon:const Icon(Icons.upload_file),label:const Text('UPLOAD PDF / NOTES')),
+    if(fileName!=null)ListTile(leading:const Icon(Icons.picture_as_pdf,color:AppColors.orange),title:Text(fileName!,style:const TextStyle(color:AppColors.white)),subtitle:const Text('Selected in this session',style:TextStyle(color:AppColors.muted)))
+  ]);
+  Future<void> pickFile()async{final r=await FilePicker.platform.pickFiles(type:FileType.custom,allowedExtensions:['pdf','doc','docx','txt']);if(r!=null)setState(()=>fileName=r.files.single.name);}
+  Widget fighterPage()=>ListView(padding:const EdgeInsets.all(18),children:[
+    const Text('FIGHTER AI',style:TextStyle(color:AppColors.gold,fontSize:24,fontWeight:FontWeight.w900)),
+    const Text('Explain • Solve • Quiz • Revise',style:TextStyle(color:AppColors.muted)),const SizedBox(height:18),
+    const Card(color:AppColors.surface,child:Padding(padding:EdgeInsets.all(16),child:Text('Topic या question के साथ Fighter workflow use करें. Live AI answers के लिए Gemini/OpenAI-compatible API configuration connect की जा सकती है.',style:TextStyle(color:AppColors.white,height:1.5)))),
+    for(final s in ['Explain Percentage from basic','Solve this PYQ','Make a 10-question quiz','Revise weak topics'])ListTile(title:Text(s,style:const TextStyle(color:AppColors.white)),trailing:const Icon(Icons.arrow_forward,color:AppColors.gold),onTap:()=>showDialog(context:context,builder:(_)=>AlertDialog(title:const Text('Fighter AI'),content:Text('Request ready: '+s),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('OK'))])))
+  ]);
+  Widget videosPage()=>ListView(padding:const EdgeInsets.all(18),children:[
+    const Text('Videos',style:TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
+    for(final s in ['SSC Maths Basics','Reasoning Concepts','English Grammar','UPSSSC PET Revision'])ListTile(leading:const Icon(Icons.play_circle,color:AppColors.orange),title:Text(s,style:const TextStyle(color:AppColors.white)),subtitle:const Text('Open YouTube search',style:TextStyle(color:AppColors.muted)),onTap:()=>launchUrl(Uri.parse('https://www.youtube.com/results?search_query='+Uri.encodeComponent(s)),mode:LaunchMode.externalApplication))
+  ]);
+  Widget updatesPage()=>ListView(padding:const EdgeInsets.all(18),children:[
+    const Text('Updates Hub',style:TextStyle(color:AppColors.gold,fontSize:22,fontWeight:FontWeight.w900)),
+    const Text('Current affairs • vacancies • exam notices',style:TextStyle(color:AppColors.muted)),
+    for(final s in ['Daily Current Affairs','Weekly Current Affairs','Monthly Revision','SSC CGL Notifications','Railway Recruitment Updates','UP SI Updates','UPSSSC Updates'])ListTile(title:Text(s,style:const TextStyle(color:AppColors.white)),trailing:const Icon(Icons.chevron_right,color:AppColors.gold),onTap:()=>launchUrl(Uri.parse('https://www.google.com/search?q='+Uri.encodeComponent(s)),mode:LaunchMode.externalApplication))
+  ]);
 }
