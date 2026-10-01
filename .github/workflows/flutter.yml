@@ -1,0 +1,30 @@
+name: Build Warrior Aspirant Flutter APK
+on:
+  push:
+    branches: [main]
+    paths:
+      - "flutter_app/**"
+      - ".github/workflows/flutter.yml"
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter_app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.3"
+          channel: stable
+          cache: true
+      - run: flutter create --platforms=android --org com.warrioraspirant .
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Warrior-Aspirant-v1.6-release-apk
+          path: flutter_app/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 90
