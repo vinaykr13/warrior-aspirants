@@ -255,7 +255,8 @@ public class MainActivity extends Activity {
             studyCard("🧠","Reasoning","60%","Completed Topics",v->topics("Reasoning"));
             studyCard("🔤","English","53%","Completed Topics",v->topics("English"));
             studyCard("🌍","GK / GS","56%","Completed Topics",v->topics("GK / GS"));
-            studyCard("◉","Current Affairs","Today","Daily Updates",v->page("Current Affairs"));\n            studyCard("🟢","UPSSSC PET","100 Questions","Complete 2026 Syllabus",v->petSyllabus());
+            studyCard("◉","Current Affairs","Today","Daily Updates",v->page("Current Affairs"));
+            studyCard("🟢","UPSSSC PET","100 Questions","Complete 2026 Syllabus",v->petSyllabus());
         } else if(p.equals("Practice")){
             hero("PRACTICE ARENA","Train your speed & accuracy","10 / 20 / 50 questions • Timer • Analysis",v->practice());
             action("⚡  Quick Practice — 10 Questions",v->practice());action("🎯  Topic Practice",v->topics("Practice Topics"));action("📚  PYQ Engine",v->pyq());action("🏆  Mock Test",v->mock());action("📕  Mistake Book",v->mistakes());
