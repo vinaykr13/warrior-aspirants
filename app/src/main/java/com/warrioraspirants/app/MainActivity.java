@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
     View floatingFighter(){Button b=new Button(this);b.setText("🤖  Fighter AI");b.setTextColor(WHITE);b.setTextSize(13);b.setAllCaps(false);b.setBackground(shape(NAVY,25));b.setElevation(6);b.setOnClickListener(v->fighter());return b;}
 
     View bottomNav(){
-        LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);nav.setPadding(8,7,8,7);nav.setBackground(WHITE);nav.setElevation(18);
+        LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);nav.setPadding(8,7,8,7);nav.setBackgroundColor(WHITE);nav.setElevation(18);
         String[] icons={"⌂","▦","⚡","◯"};String[] labels={"Home","Study","Practice","Profile"};String[] pages={"Home","Study","Practice","Profile"};
         for(int i=0;i<labels.length;i++){
             final String pg=pages[i];
