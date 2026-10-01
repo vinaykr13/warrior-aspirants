@@ -165,9 +165,9 @@ public class MainActivity extends Activity {
 
     View bottomNav(){
         LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);nav.setPadding(4,3,4,3);nav.setBackgroundColor(WHITE);nav.setElevation(14);
-        String[] a={"💬\nChats","📚\nStudy","⚡\nPractice","◉\nProfile"};
+        String[] a={"HOME","STUDY","PRACTICE","PROFILE"};
         String[] pages={"Home","Study","Practice","Profile"};
-        for(int i=0;i<a.length;i++){final String p=pages[i];TextView b=text(a[i],10,NAVY,true);b.setGravity(Gravity.CENTER);b.setOnClickListener(v->page(p));b.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});nav.addView(b,new LinearLayout.LayoutParams(0,58,1));}
+        for(int i=0;i<a.length;i++){final String p=pages[i];TextView b=text(a[i],9,NAVY,true);b.setGravity(Gravity.CENTER);b.setLetterSpacing(.08f);b.setOnClickListener(v->page(p));b.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});nav.addView(b,new LinearLayout.LayoutParams(0,58,1));}
         return nav;
     }
 
@@ -192,12 +192,30 @@ public class MainActivity extends Activity {
     }
 
     void profileHeader(){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setGravity(Gravity.CENTER);c.setPadding(12,14,12,16);c.setBackground(shape(NAVY,20));TextView av=text("👤",40,WHITE,true);av.setGravity(Gravity.CENTER);c.addView(av);c.addView(text("Warrior Profile",18,WHITE,true));c.addView(text("Level "+store.level()+"  •  "+store.xp()+" XP",12,Color.rgb(210,220,238),false));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,0,0,12);body.addView(c,p);}
-    void studyCard(String ic,String name,String value,String sub,View.OnClickListener l){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(12,10,12,10);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));TextView i=text(ic,20,RED,true);c.addView(i);c.addView(title(name,16));c.addView(muted(sub,9));ProgressBar pb=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);int pr=value.equals("Today")?65:Integer.parseInt(value.replace("%",""));pb.setProgress(pr);pb.setProgressDrawable(shape(RED,8));c.addView(pb,new LinearLayout.LayoutParams(-1,7));TextView go=text("CONTINUE  ›",10,RED,true);go.setGravity(Gravity.RIGHT);c.addView(go);c.setOnClickListener(l);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,108);p.setMargins(0,4,0,4);body.addView(c,p);animateView(c,body.getChildCount()*30);}
+    void studyCard(String ic,String name,String value,String sub,View.OnClickListener l){
+        LinearLayout c=new LinearLayout(this); c.setOrientation(LinearLayout.VERTICAL); c.setPadding(16,14,16,14);
+        c.setBackground(stroke(WHITE,Color.rgb(225,229,236),20)); c.setElevation(2); c.setOnClickListener(l);
+        LinearLayout top=new LinearLayout(this); top.setGravity(Gravity.CENTER_VERTICAL);
+        TextView i=text(ic,12,NAVY,true); i.setGravity(Gravity.CENTER); i.setBackground(shape(Color.rgb(239,243,249),15)); top.addView(i,new LinearLayout.LayoutParams(38,38));
+        LinearLayout cp=new LinearLayout(this); cp.setOrientation(LinearLayout.VERTICAL); cp.setPadding(12,0,0,0); cp.addView(title(name,16)); cp.addView(muted(sub,10)); top.addView(cp,new LinearLayout.LayoutParams(0,50,1));
+        TextView pct=text(value,13,RED,true); pct.setGravity(Gravity.CENTER); top.addView(pct,new LinearLayout.LayoutParams(52,32)); c.addView(top);
+        ProgressBar pb=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal); int pr=value.equals("Today")?65:Integer.parseInt(value.replace("%","")); pb.setProgress(pr); pb.setProgressDrawable(shape(RED,8)); LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-1,7); pp.setMargins(0,13,0,0); c.addView(pb,pp);
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,104); p.setMargins(0,5,0,5); body.addView(c,p); animateView(c,body.getChildCount()*25);
+    }
 
     void topTitle(String p){LinearLayout bar=new LinearLayout(this);bar.setGravity(Gravity.CENTER_VERTICAL);bar.setPadding(2,4,2,14);TextView back=text("‹",32,NAVY,false);back.setGravity(Gravity.CENTER);back.setOnClickListener(v->page("Home"));bar.addView(back,new LinearLayout.LayoutParams(38,48));TextView t=title(p,22);bar.addView(t,new LinearLayout.LayoutParams(0,48,1));TextView xp=text("⚔ "+store.xp(),11,RED,true);xp.setGravity(Gravity.CENTER);xp.setBackground(shape(Color.rgb(255,239,240),18));bar.addView(xp,new LinearLayout.LayoutParams(70,36));body.addView(bar);}
 
     void section(String s){TextView t=text(s,11,RED,true);t.setPadding(3,13,3,7);body.addView(t);}
-    Button action(String s,View.OnClickListener l){Button b=new Button(this);b.setText(s);b.setTextSize(13);b.setTextColor(NAVY);b.setAllCaps(false);b.setGravity(Gravity.CENTER_VERTICAL);b.setPadding(15,0,15,0);b.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));b.setElevation(1);b.setOnClickListener(l);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,55);p.setMargins(0,4,0,4);body.addView(b,p);animateView(b,body.getChildCount()*18);return b;}
+    View action(String s,View.OnClickListener l){
+        String clean=s.replaceAll("^[^A-Za-z0-9]+","").replace("  "," ");
+        LinearLayout row=new LinearLayout(this); row.setGravity(Gravity.CENTER_VERTICAL); row.setPadding(14,8,12,8);
+        row.setBackground(stroke(WHITE,Color.rgb(225,229,236),18)); row.setElevation(1); row.setOnClickListener(l);
+        TextView mark=text(clean.length()>0?clean.substring(0,1).toUpperCase():"•",13,WHITE,true); mark.setGravity(Gravity.CENTER); mark.setBackground(shape(NAVY,13));
+        row.addView(mark,new LinearLayout.LayoutParams(38,38));
+        TextView label=text(clean,14,DARK,true); label.setPadding(12,0,0,0); row.addView(label,new LinearLayout.LayoutParams(0,54,1));
+        TextView arrow=text("›",25,RED,false); arrow.setGravity(Gravity.CENTER); row.addView(arrow,new LinearLayout.LayoutParams(28,50));
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,68); p.setMargins(0,5,0,5); body.addView(row,p); animateView(row,body.getChildCount()*16); return row;
+    }
     void card(String h,String sub,String val){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(14,12,14,13);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),18));c.addView(text(h,10,RED,true));c.addView(title(sub,16));c.addView(muted(val,11));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,3,0,9);body.addView(c,p);animateView(c,40);}
     void hero(String h,String t,String sub,View.OnClickListener l){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(16,15,16,15);c.setBackground(shape(NAVY,20));c.setElevation(4);c.addView(text(h,10,Color.rgb(190,204,228),true));c.addView(text(t,20,WHITE,true));c.addView(text(sub,11,Color.rgb(218,225,238),false));Button go=new Button(this);go.setText("START  →");go.setTextColor(WHITE);go.setAllCaps(false);go.setBackground(shape(RED,17));go.setOnClickListener(l);c.addView(go,new LinearLayout.LayoutParams(-1,45));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,2,0,10);body.addView(c,p);animateView(c,40);}
 
