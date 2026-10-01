@@ -23,28 +23,32 @@ jobs:
       - name: Build debug APK
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Prepare permanent release signing
+      - name: Check release signing configuration
+        id: signing
         env:
           WA_KEYSTORE_BASE64: ${{ secrets.WA_KEYSTORE_BASE64 }}
           WA_KEYSTORE_PASSWORD: ${{ secrets.WA_KEYSTORE_PASSWORD }}
           WA_KEY_ALIAS: ${{ secrets.WA_KEY_ALIAS }}
           WA_KEY_PASSWORD: ${{ secrets.WA_KEY_PASSWORD }}
         run: |
-          set -e
-          test -n "$WA_KEYSTORE_BASE64"
-          test -n "$WA_KEYSTORE_PASSWORD"
-          test -n "$WA_KEY_ALIAS"
-          test -n "$WA_KEY_PASSWORD"
-          echo "$WA_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/warrior-release.jks"
-          echo "WA_KEYSTORE_FILE=$RUNNER_TEMP/warrior-release.jks" >> "$GITHUB_ENV"
-          echo "WA_KEYSTORE_PASSWORD=$WA_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
-          echo "WA_KEY_ALIAS=$WA_KEY_ALIAS" >> "$GITHUB_ENV"
-          echo "WA_KEY_PASSWORD=$WA_KEY_PASSWORD" >> "$GITHUB_ENV"
+          if [ -n "$WA_KEYSTORE_BASE64" ] && [ -n "$WA_KEYSTORE_PASSWORD" ] && [ -n "$WA_KEY_ALIAS" ] && [ -n "$WA_KEY_PASSWORD" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+            echo "$WA_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/warrior-release.jks"
+            echo "WA_KEYSTORE_FILE=$RUNNER_TEMP/warrior-release.jks" >> "$GITHUB_ENV"
+            echo "WA_KEYSTORE_PASSWORD=$WA_KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "WA_KEY_ALIAS=$WA_KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "WA_KEY_PASSWORD=$WA_KEY_PASSWORD" >> "$GITHUB_ENV"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "Release signing secrets are not configured; debug build will still be produced."
+          fi
 
       - name: Build signed release APK
+        if: steps.signing.outputs.configured == 'true'
         run: gradle :app:assembleRelease --no-daemon --stacktrace
 
       - name: Verify release signature
+        if: steps.signing.outputs.configured == 'true'
         run: |
           SDK_APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
           "$SDK_APKSIGNER" verify --verbose app/build/outputs/apk/release/app-release.apk
@@ -52,11 +56,11 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: Warrior-Aspirants-v1.3-debug-apk
+          name: Warrior-Aspirants-v1.4-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload permanent release APK
         uses: actions/upload-artifact@v4
         with:
-          name: Warrior-Aspirants-v1.3-release-apk
+          name: Warrior-Aspirants-v1.4-release-apk
           path: app/build/outputs/apk/release/app-release.apk
