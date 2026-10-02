@@ -443,10 +443,10 @@ public class MainActivity extends Activity {
         if(s.equals("UP SI")){
             section("UP SI • COMPLETE 500+ TOPIC ROADMAP");
             action("🔤 सामान्य हिन्दी • 154 Learning Topics",v->topics("UP SI Hindi"));
-            action("⚖️ मूल विधि / संविधान • 112 Learning Topics",v->topics("UP SI Law"));
-            action("🌍 सामान्य ज्ञान • 98 Learning Topics",v->topics("UP SI GK"));
+            action("⚖️ मूल विधि / संविधान • 182 Learning Topics",v->topics("UP SI Law"));
+            action("🌍 सामान्य ज्ञान • 252 Learning Topics",v->topics("UP SI GK"));
             action("🔢 संख्यात्मक एवं मानसिक योग्यता • 91 Learning Topics",v->topics("UP SI Maths"));
-            action("🧠 मानसिक अभिरुचि / IQ / Reasoning • 84 Learning Topics",v->topics("UP SI Reasoning"));
+            action("🧠 मानसिक अभिरुचि / IQ / Reasoning • 210 Learning Topics",v->topics("UP SI Reasoning"));
             action("💻 Computer Science • syllabus-linked topics",v->topics("UP SI Computer"));
             body.addView(muted("500+ nodes are granular learning topics under official syllabus headings—not 500 unrelated subjects. Each opens Theory / Important Points / PYQ / Practice / Revision.",10));
         } else if(s.equals("UP SI Hindi")){
