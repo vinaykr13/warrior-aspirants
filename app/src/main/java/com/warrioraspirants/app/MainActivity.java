@@ -39,16 +39,56 @@ public class MainActivity extends Activity {
     void press(View v){v.animate().scaleX(.97f).scaleY(.97f).setDuration(70).withEndAction(()->v.animate().scaleX(1f).scaleY(1f).setDuration(110).start()).start();}
 
     void splash(){
-        LinearLayout l=new LinearLayout(this); l.setOrientation(LinearLayout.VERTICAL); l.setGravity(Gravity.CENTER);
-        l.setPadding(28,20,28,20); l.setBackgroundColor(NAVY);
-        ImageView logo=new ImageView(this); logo.setImageResource(R.drawable.warrior_icon); logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        l.addView(logo,new LinearLayout.LayoutParams(-1,220));
-        TextView a=text("WARRIOR ASPIRANTS",28,WHITE,true), q=text("Build the Empire.\nThe Queen Will Come.",17,Color.LTGRAY,true);
-        a.setGravity(Gravity.CENTER);q.setGravity(Gravity.CENTER);l.addView(a);l.addView(q);setContentView(l);
-        logo.setAlpha(0);logo.setScaleX(.8f);logo.setScaleY(.8f);a.setAlpha(0);q.setAlpha(0);
-        logo.animate().alpha(1).scaleX(1).scaleY(1).setDuration(650);
-        a.animate().alpha(1).setStartDelay(300).setDuration(500);q.animate().alpha(1).setStartDelay(500).setDuration(500);
-        new Handler().postDelayed(this::home,1900);
+        getWindow().setStatusBarColor(NAVY);
+        getWindow().setNavigationBarColor(NAVY);
+        getWindow().getDecorView().setSystemUiVisibility(0);
+
+        LinearLayout l=new LinearLayout(this);
+        l.setOrientation(LinearLayout.VERTICAL);
+        l.setGravity(Gravity.CENTER);
+        l.setPadding(28,20,28,20);
+        l.setBackground(gradient(Color.rgb(4,16,38),NAVY2,0));
+
+        FrameLayout logoWrap=new FrameLayout(this);
+        logoWrap.setPadding(18,18,18,18);
+        logoWrap.setBackground(shape(Color.rgb(16,44,86),44));
+
+        ImageView glow=new ImageView(this);
+        glow.setImageResource(R.drawable.warrior_icon);
+        glow.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        glow.setAlpha(.12f);
+        logoWrap.addView(glow,new FrameLayout.LayoutParams(-1,-1));
+
+        ImageView logo=new ImageView(this);
+        logo.setImageResource(R.drawable.warrior_icon);
+        logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        logoWrap.addView(logo,new FrameLayout.LayoutParams(-1,-1));
+
+        l.addView(logoWrap,new LinearLayout.LayoutParams(190,190));
+
+        TextView a=text("WARRIOR ASPIRANTS",27,WHITE,true);
+        TextView q=text("KNOWLEDGE FOR VICTORY",10,Color.rgb(196,211,233),true);
+        TextView line=text("Build the Empire.  •  The Queen Will Come.",14,Color.rgb(220,228,240),true);
+        a.setGravity(Gravity.CENTER); q.setGravity(Gravity.CENTER); line.setGravity(Gravity.CENTER);
+        a.setPadding(0,20,0,0);
+        q.setPadding(0,3,0,0);
+        line.setPadding(0,14,0,0);
+        l.addView(a); l.addView(q); l.addView(line);
+        setContentView(l);
+
+        logoWrap.setAlpha(0f); logoWrap.setScaleX(.55f); logoWrap.setScaleY(.55f); logoWrap.setRotation(-8f);
+        glow.setAlpha(0f); logo.setAlpha(0f);
+        a.setAlpha(0f); q.setAlpha(0f); line.setAlpha(0f);
+
+        logoWrap.animate().alpha(1f).scaleX(1f).scaleY(1f).rotation(0f)
+            .setDuration(700).setInterpolator(new android.view.animation.OvershootInterpolator(1.15f)).start();
+        glow.animate().alpha(.18f).setStartDelay(260).setDuration(450).start();
+        logo.animate().alpha(1f).setStartDelay(180).setDuration(500).start();
+        a.animate().alpha(1f).setStartDelay(430).setDuration(450).start();
+        q.animate().alpha(1f).setStartDelay(620).setDuration(420).start();
+        line.animate().alpha(1f).setStartDelay(780).setDuration(420).start();
+
+        new Handler().postDelayed(this::home,2300);
     }
 
     TextView title(String s,float size){TextView t=text(s,size,DARK,true);t.setPadding(0,0,0,0);return t;}
@@ -60,6 +100,7 @@ public class MainActivity extends Activity {
     int themeText(){return darkMode?Color.rgb(238,242,248):DARK;}
     int themeMuted(){return darkMode?Color.rgb(165,176,194):MUTED;}
     void home(){
+        applyThemeBars();
         root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(themeBg());
         body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,124);body.setBackgroundColor(themeBg());
         ScrollView sc=new ScrollView(this);sc.setBackgroundColor(themeBg());sc.setOverScrollMode(View.OVER_SCROLL_NEVER);sc.addView(body);
