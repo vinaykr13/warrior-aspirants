@@ -153,6 +153,14 @@ public class MainActivity extends Activity {
         premiumExam(exams,"UP SI","PRACTICE",false,v->page("Study"));
         body.addView(exams);
 
+        section("QUICK ACTIONS");
+        LinearLayout quick=new LinearLayout(this); quick.setWeightSum(4);
+        premiumExam(quick,"LESSONS","THEORY",false,v->page("Study"));
+        premiumExam(quick,"PYQs","TOPIC-WISE",false,v->pyq());
+        premiumExam(quick,"MOCKS","FULL TEST",false,v->mock());
+        premiumExam(quick,"REVISION","MISTAKES",false,v->mistakes());
+        body.addView(quick);
+
         section("LEARNING HUB");
         premiumModule(body,"01","STUDY ROOM","Concepts, formulas & guided lessons",v->page("Study"));
         premiumModule(body,"02","PRACTICE ARENA","Speed, accuracy & smart practice",v->practice());
@@ -238,15 +246,31 @@ public class MainActivity extends Activity {
     View floatingFighter(){Button b=new Button(this);b.setText("🤖  Fighter AI");b.setTextColor(WHITE);b.setTextSize(13);b.setAllCaps(false);b.setBackground(shape(NAVY,25));b.setElevation(6);b.setOnClickListener(v->fighter());return b;}
 
     View bottomNav(){
-        LinearLayout nav=new LinearLayout(this);nav.setGravity(Gravity.CENTER);nav.setPadding(8,7,8,7);nav.setBackgroundColor(WHITE);nav.setElevation(18);
-        String[] icons={"⌂","▦","⚡","◯"};String[] labels={"Home","Study","Practice","Profile"};String[] pages={"Home","Study","Practice","Profile"};
+        LinearLayout nav=new LinearLayout(this);
+        nav.setGravity(Gravity.CENTER);
+        nav.setPadding(10,9,10,9);
+        nav.setBackgroundColor(WHITE);
+        nav.setElevation(22);
+        String[] icons={"⌂","▦","⚡","F","◯"};
+        String[] labels={"Home","Study","Practice","Fighter","Profile"};
+        String[] pages={"Home","Study","Practice","Fighter","Profile"};
         for(int i=0;i<labels.length;i++){
             final String pg=pages[i];
-            LinearLayout item=new LinearLayout(this);item.setOrientation(LinearLayout.VERTICAL);item.setGravity(Gravity.CENTER);item.setPadding(5,3,5,3);
-            TextView ic=text(icons[i],18,NAVY,true);ic.setGravity(Gravity.CENTER);item.addView(ic,new LinearLayout.LayoutParams(-1,25));
-            TextView tx=text(labels[i],9,MUTED,true);tx.setGravity(Gravity.CENTER);item.addView(tx,new LinearLayout.LayoutParams(-1,18));
-            item.setOnClickListener(v->page(pg));item.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,52,1);p.setMargins(2,0,2,0);nav.addView(item,p);
+            LinearLayout item=new LinearLayout(this);
+            item.setOrientation(LinearLayout.VERTICAL);
+            item.setGravity(Gravity.CENTER);
+            item.setPadding(4,4,4,4);
+            TextView ic=text(icons[i],20,i==0?RED:NAVY,true);
+            ic.setGravity(Gravity.CENTER);
+            item.addView(ic,new LinearLayout.LayoutParams(-1,28));
+            TextView tx=text(labels[i],11,i==0?RED:MUTED,true);
+            tx.setGravity(Gravity.CENTER);
+            item.addView(tx,new LinearLayout.LayoutParams(-1,22));
+            item.setOnClickListener(v->page(pg));
+            item.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
+            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,62,1);
+            p.setMargins(2,0,2,0);
+            nav.addView(item,p);
         }
         return nav;
     }
