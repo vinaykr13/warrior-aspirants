@@ -255,7 +255,7 @@ public class MainActivity extends Activity {
         LinearLayout nav=new LinearLayout(this);
         nav.setOrientation(LinearLayout.HORIZONTAL);
         nav.setGravity(Gravity.CENTER);
-        nav.setPadding(8,7,8,7);
+        nav.setPadding(10,9,10,9);
         nav.setBackground(gradient(Color.rgb(255,255,255),Color.rgb(248,250,253),30));
         nav.setElevation(20);
 
@@ -271,20 +271,20 @@ public class MainActivity extends Activity {
             item.setGravity(Gravity.CENTER);
             item.setPadding(3,3,3,3);
 
-            TextView ic=text(icons[i],20,NAVY,true);
+            TextView ic=text(icons[i],24,NAVY,true);
             ic.setGravity(Gravity.CENTER);
-            TextView tx=text(labels[i],10,MUTED,true);
+            TextView tx=text(labels[i],12,MUTED,true);
             tx.setGravity(Gravity.CENTER);
 
             LinearLayout active=new LinearLayout(this);
             active.setGravity(Gravity.CENTER);
-            active.setPadding(12,5,12,5);
+            active.setPadding(15,7,15,7);
             active.setBackground(shape(index==0?Color.rgb(238,243,250):Color.TRANSPARENT,22));
             active.addView(ic);
             active.addView(tx);
 
             // Keep icon and label visually grouped like a premium tab, not a basic toolbar.
-            item.addView(active,new LinearLayout.LayoutParams(-1,48));
+            item.addView(active,new LinearLayout.LayoutParams(-1,58));
             item.setOnClickListener(v->{
                 for(int k=0;k<nav.getChildCount();k++){
                     View child=nav.getChildAt(k);
@@ -306,7 +306,7 @@ public class MainActivity extends Activity {
                 if(e.getAction()==MotionEvent.ACTION_DOWN) press(v);
                 return false;
             });
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,58,1);
+            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,68,1);
             p.setMargins(1,0,1,0);
             nav.addView(item,p);
         }
