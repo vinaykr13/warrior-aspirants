@@ -19,6 +19,8 @@ public class MainActivity extends Activity {
     final int BG=Color.rgb(247,249,252), WHITE=Color.WHITE, DARK=Color.rgb(27,35,48), MUTED=Color.rgb(105,114,130);
     boolean darkMode=false;
     LinearLayout root,body; ProgressStore store; ArrayList<String> mistakes=new ArrayList<>();
+    int practiceIndex=0, practiceScore=0;
+    String practiceTopicName="Mixed Practice";
 
     public void onCreate(Bundle b){
         super.onCreate(b);
@@ -434,7 +436,42 @@ public class MainActivity extends Activity {
     StudyContent.Lesson material(String t){return StudyContent.get(t);} String theory(String t){return material(t).theory;}String example(String t){return material(t).example;}String trick(String t){return material(t).trick;}
 
     void practice(){practiceTopic("Mixed Practice");}
-    void practiceTopic(String topic){body.removeAllViews();topTitle("PYQ / Practice");hero("QUANTITATIVE APTITUDE","एक वस्तु का मूल 20% बढ़ा दिया गया। यदि नया मूल्य ₹600 है, तो मूल मूल्य क्या था?","Timer  •  10 questions  •  Instant analysis",v->toast("Choose an option"));String[] o={"₹600","₹500","₹480","₹720"};for(String x:o){final String ans=x;action(ans,v->{if(ans.equals("₹500")){store.addResult(true);toast("Correct! +10 XP");}else{store.addResult(false);store.saveMistake(topic+" — Percentage question");toast("Wrong • Mistake Book में saved");}mistakes=store.mistakes();});}action("Next Question  →",v->toast("Next verified question will load here."));}
+    void practiceTopic(String topic){ practiceTopicName=topic; practiceIndex=0; practiceScore=0; showPracticeQuestion(); }
+    void showPracticeQuestion(){
+        body.removeAllViews(); topTitle("Practice • "+practiceTopicName);
+        String[][] q={
+            {"Percentage","250 ka 20% kitna hai?","50","25","75","100","50"},
+            {"Number System","12 aur 18 ka HCF kya hai?","6","3","9","12","6"},
+            {"Ratio","A:B=2:3 aur A=20, B kya hoga?","30","10","25","40","30"},
+            {"Average","10,20,30 ka average kya hai?","20","15","20","25","30"},
+            {"Profit & Loss","CP ₹800, profit 15%, SP?","₹920","₹900","₹880","₹940","₹920"},
+            {"TSD","72 km/h ko m/s me badlo.","20","18","20","24","36"},
+            {"Algebra","x+7=19, x=?","12","10","11","12","13"},
+            {"Reasoning","2,5,10,17,26, next?","37","35","36","37","39"},
+            {"English","Each of the boys ___ ready.","is","are","were","have","is"},
+            {"GK/GS","Fundamental Rights Constitution ke kis Part me hain?","Part III","Part I","Part II","Part IV","Part III"}
+        };
+        String[] a=q[practiceIndex%q.length];
+        card("QUESTION "+(practiceIndex+1)+" / 10",a[0],"Choose the correct answer");
+        body.addView(text(a[1],18,themeText(),true));
+        String[] opts={a[2],a[3],a[4],a[5]};
+        for(String opt:opts){ final String chosen=opt, correct=a[6];
+            action(chosen,v->{ boolean ok=chosen.equals(correct);
+                if(ok){practiceScore++;store.addResult(true);toast("Correct! +10 XP");}
+                else{store.addResult(false);store.saveMistake(practiceTopicName+" — "+a[1]);mistakes=store.mistakes();toast("Wrong • Correct: "+correct);}
+                practiceIndex++; if(practiceIndex>=10) showPracticeResult(); else showPracticeQuestion();
+            });
+        }
+        body.addView(muted("Instant analysis • Wrong answers automatically saved to Mistake Book",10));
+    }
+    void showPracticeResult(){
+        body.removeAllViews(); topTitle("Practice Result");
+        hero("SESSION COMPLETE",practiceScore+" / 10 correct",(practiceScore*10)+"% accuracy • "+practiceTopicName,v->practiceTopic(practiceTopicName));
+        card("ANALYSIS","Accuracy "+(practiceScore*10)+"%","Correct: "+practiceScore+" • Wrong: "+(10-practiceScore));
+        action("📕 Open Mistake Book",v->mistakes());
+        action("🔄 Retry Set",v->practiceTopic(practiceTopicName));
+        action("← Back to Practice",v->page("Practice"));
+    }
     void pyq(){body.removeAllViews();topTitle("PYQs");card("QUESTION BANK","SSC CGL • Railway • UP SI","Exam • Year • Shift • Topic • Solution");action("SSC CGL → Maths",v->pyqTopic("Maths"));action("SSC CGL → Reasoning",v->pyqTopic("Reasoning"));action("SSC CGL → English",v->pyqTopic("English"));action("SSC CGL → General Awareness",v->pyqTopic("GK / GS"));}
     void pyqTopic(String t){body.removeAllViews();topTitle("PYQ • "+t);card("PREVIOUS YEAR","Verified question bank","Options • Correct answer • Detailed explanation");action("▶  Start Topic PYQ",v->practiceTopic(t));action("←  Back",v->pyq());}
     void mock(){body.removeAllViews();topTitle("Mock Test");hero("FULL MOCK","SSC CGL Tier 1 & 2","Timer • Section analysis • Accuracy • Mistakes",v->practiceTopic("Mock Test"));action("🏆  Start Mock",v->practiceTopic("Mock Test"));action("←  Back",v->page("Practice"));}
