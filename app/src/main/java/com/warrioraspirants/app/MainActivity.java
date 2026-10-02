@@ -330,7 +330,7 @@ public class MainActivity extends Activity {
         } else if(p.equals("Current Affairs")){
             section("CURRENT AFFAIRS");action("📅 Today — Live",v->openUrl("https://news.google.com/rss/search?q=India%20current%20affairs%20when:1d"));action("Yesterday — Live",v->openUrl("https://news.google.com/rss/search?q=India%20current%20affairs%20when:2d"));action("📚 Weekly",v->openUrl("https://news.google.com/rss/search?q=India%20current%20affairs%20when:7d"));action("🗓 Monthly",v->openUrl("https://www.google.com/search?q=India+monthly+current+affairs"));action("❓ Current Affairs Quiz",v->practiceTopic("Current Affairs"));
         } else {
-            profileHeader();action("📊 Progress",v->progress());action("🕘 History",v->history());action("🔖 Bookmarks",v->bookmarks());action("📤 Share App",v->shareApp());action("📄 Upload Study PDF",v->pickPdf());action("⚙️ Settings",v->settings());
+            profileHeader();action("📊 Progress",v->progress());action("🕘 History",v->history());action("🔖 Bookmarks",v->bookmarks());action("📤 Share App",v->shareApp());action("📄 Upload Study PDF",v->pickPdf());action("⚙️ Settings",v->settings());action("ℹ️ About Warrior Aspirants",v->about());
         }
     }
 
@@ -389,6 +389,18 @@ public class MainActivity extends Activity {
     void mistakes(){body.removeAllViews();topTitle("Mistake Book");if(mistakes.size()==0)card("EMPTY","No mistakes saved yet","Wrong questions will appear here.");else for(String m:mistakes)card("REVISE",m,"Retry → understand → improve");action("←  Back",v->page("Practice"));}
     void fighter(){body.removeAllViews();topTitle("Fighter AI");hero("YOUR STUDY PARTNER","Explain • Solve • Quiz • Revise","Ask in simple Hindi / Hinglish.",v->toast("Type your question below"));EditText e=new EditText(this);e.setHint("Explain this question...");e.setTextSize(14);e.setPadding(15,0,15,0);e.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));body.addView(e,new LinearLayout.LayoutParams(-1,54));action("Send  →",v->sendFighter(e));action("🔑 Set Gemini API Key",v->setGeminiKey());}
     void ca(String s){body.removeAllViews();topTitle(s);card("CURRENT AFFAIRS","Fresh verified updates","Facts should be dated and sourced.");action("←  Back",v->page("Current Affairs"));}
+    void about(){body.removeAllViews();topTitle("About");
+        LinearLayout hero=new LinearLayout(this);hero.setOrientation(LinearLayout.VERTICAL);hero.setGravity(Gravity.CENTER);hero.setPadding(20,20,20,20);hero.setBackground(gradient(NAVY,NAVY2,24));
+        ImageView logo=new ImageView(this);logo.setImageResource(R.drawable.warrior_icon);logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);hero.addView(logo,new LinearLayout.LayoutParams(-1,130));
+        hero.addView(text("WARRIOR ASPIRANTS",24,WHITE,true));hero.addView(text("KNOWLEDGE FOR VICTORY",10,Color.rgb(205,219,239),true));
+        LinearLayout.LayoutParams hp=new LinearLayout.LayoutParams(-1,-2);hp.setMargins(0,0,0,14);body.addView(hero,hp);
+        card("VERSION","13.1","Personal exam-preparation companion");
+        card("PREPARATION","SSC CGL • Railway • UP SI • UPSSSC PET","Theory, concepts, important points, practice, PYQs and revision");
+        card("STUDY MATERIAL","Offline","Core study content is bundled inside the app; internet features are used for live/current services and Fighter AI.");
+        card("FIGHTER AI","Your study partner","Explain • Solve • Quiz • Revise in simple Hindi / Hinglish");
+        action("📤 Share Warrior Aspirants",v->shareApp());action("← Back to Profile",v->page("Profile"));
+    }
+
     void settings(){body.removeAllViews();topTitle("Settings");card("TARGET EXAMS","SSC CGL 2027","Railway • UP SI");card("DAILY TARGET","2 hours","Personalised planner can be expanded.");action("🗑  Reset saved progress",v->{new AlertDialog.Builder(this).setTitle("Reset progress?").setMessage("XP, solved questions and Mistake Book will be cleared.").setNegativeButton("Cancel",null).setPositiveButton("Reset",(d,w)->{getSharedPreferences("warrior_progress",MODE_PRIVATE).edit().clear().apply();store=new ProgressStore(this);mistakes=store.mistakes();toast("Progress reset");page("Profile");}).show();});}
     void progress(){body.removeAllViews();topTitle("Progress");card("LEVEL "+store.level(),"XP "+store.xp(),"Preparation "+store.prep()+"% • Accuracy "+store.accuracy()+"% • Streak "+store.streak()+" days");card("LEARNING LOOP","Learn → Practice → Analyze → Improve","Progress is saved on this device.");}
     void openUrl(String u){try{startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(u)));}catch(Exception e){toast("Link open नहीं हुआ.");}}
