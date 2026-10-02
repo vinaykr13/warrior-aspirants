@@ -43,8 +43,7 @@ public class MainActivity extends Activity {
         l.setPadding(28,20,28,20); l.setBackgroundColor(NAVY);
         ImageView logo=new ImageView(this); logo.setImageResource(R.drawable.warrior_icon); logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         l.addView(logo,new LinearLayout.LayoutParams(-1,220));
-        TextView a=text("WARRIOR ASPIRANTS",28,WHITE,true), q=text("Build the Empire.
-The Queen Will Come.",17,Color.LTGRAY,true);
+        TextView a=text("WARRIOR ASPIRANTS",28,WHITE,true), q=text("Build the Empire.\nThe Queen Will Come.",17,Color.LTGRAY,true);
         a.setGravity(Gravity.CENTER);q.setGravity(Gravity.CENTER);l.addView(a);l.addView(q);setContentView(l);
         logo.setAlpha(0);logo.setScaleX(.8f);logo.setScaleY(.8f);a.setAlpha(0);q.setAlpha(0);
         logo.animate().alpha(1).scaleX(1).scaleY(1).setDuration(650);
@@ -252,10 +251,7 @@ The Queen Will Come.",17,Color.LTGRAY,true);
 
     void gridRow(LinearLayout parent,String[] labels,View.OnClickListener[] ls){
         LinearLayout r=new LinearLayout(this);r.setWeightSum(3);
-        for(int i=0;i<3;i++){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setGravity(Gravity.CENTER);c.setPadding(4,8,4,8);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));TextView ic=text(labels[i].split("
-")[0],20,RED,true);ic.setGravity(Gravity.CENTER);c.addView(ic);String[] parts=labels[i].split("
-");StringBuilder z=new StringBuilder();for(int k=1;k<parts.length;k++){if(k>1)z.append("
-");z.append(parts[k]);}TextView n=text(z.toString(),12,DARK,true);n.setGravity(Gravity.CENTER);c.addView(n);c.setOnClickListener(ls[i]);c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,86,1);p.setMargins(3,3,3,3);r.addView(c,p);animateView(c,70+i*40);}parent.addView(r);
+        for(int i=0;i<3;i++){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setGravity(Gravity.CENTER);c.setPadding(4,8,4,8);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));TextView ic=text(labels[i].split("\n")[0],20,RED,true);ic.setGravity(Gravity.CENTER);c.addView(ic);String[] parts=labels[i].split("\n");StringBuilder z=new StringBuilder();for(int k=1;k<parts.length;k++){if(k>1)z.append("\n");z.append(parts[k]);}TextView n=text(z.toString(),12,DARK,true);n.setGravity(Gravity.CENTER);c.addView(n);c.setOnClickListener(ls[i]);c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,86,1);p.setMargins(3,3,3,3);r.addView(c,p);animateView(c,70+i*40);}parent.addView(r);
     }
 
     void newsCard(String s){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(12,10,12,10);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));c.addView(text(s,13,DARK,true));c.addView(muted("Today  •  1 min read",9));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,3,0,5);body.addView(c,p);}
