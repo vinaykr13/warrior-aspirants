@@ -54,9 +54,15 @@ public class MainActivity extends Activity {
 
     void home(){
         root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(BG);
-        body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,18);
+        body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,110);
         ScrollView sc=new ScrollView(this);sc.setBackgroundColor(BG);sc.setOverScrollMode(View.OVER_SCROLL_NEVER);sc.addView(body);
-        root.addView(sc,new LinearLayout.LayoutParams(-1,0,1)); root.addView(bottomNav());
+        FrameLayout frame=new FrameLayout(this);
+        frame.addView(sc,new FrameLayout.LayoutParams(-1,-1));
+        View nav=bottomNav();
+        FrameLayout.LayoutParams np=new FrameLayout.LayoutParams(-1,76,Gravity.BOTTOM);
+        np.setMargins(18,0,18,14);
+        frame.addView(nav,np);
+        root.addView(frame,new LinearLayout.LayoutParams(-1,0,1));
         setContentView(root); page("Home");
     }
 
@@ -247,29 +253,61 @@ public class MainActivity extends Activity {
 
     View bottomNav(){
         LinearLayout nav=new LinearLayout(this);
+        nav.setOrientation(LinearLayout.HORIZONTAL);
         nav.setGravity(Gravity.CENTER);
-        nav.setPadding(10,9,10,9);
-        nav.setBackgroundColor(WHITE);
-        nav.setElevation(22);
-        String[] icons={"⌂","▦","⚡","F","◯"};
-        String[] labels={"Home","Study","Practice","Fighter","Profile"};
-        String[] pages={"Home","Study","Practice","Fighter","Profile"};
+        nav.setPadding(8,7,8,7);
+        nav.setBackground(gradient(Color.rgb(255,255,255),Color.rgb(248,250,253),30));
+        nav.setElevation(20);
+
+        String[] icons={"⌂","▦","⚡","◉","◯"};
+        String[] labels={"Home","Study","Practice","Current","Profile"};
+        String[] pages={"Home","Study","Practice","Current","Profile"};
+
         for(int i=0;i<labels.length;i++){
             final String pg=pages[i];
+            final int index=i;
             LinearLayout item=new LinearLayout(this);
             item.setOrientation(LinearLayout.VERTICAL);
             item.setGravity(Gravity.CENTER);
-            item.setPadding(4,4,4,4);
-            TextView ic=text(icons[i],20,i==0?RED:NAVY,true);
+            item.setPadding(3,3,3,3);
+
+            TextView ic=text(icons[i],20,NAVY,true);
             ic.setGravity(Gravity.CENTER);
-            item.addView(ic,new LinearLayout.LayoutParams(-1,28));
-            TextView tx=text(labels[i],11,i==0?RED:MUTED,true);
+            TextView tx=text(labels[i],10,MUTED,true);
             tx.setGravity(Gravity.CENTER);
-            item.addView(tx,new LinearLayout.LayoutParams(-1,22));
-            item.setOnClickListener(v->page(pg));
-            item.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,62,1);
-            p.setMargins(2,0,2,0);
+
+            LinearLayout active=new LinearLayout(this);
+            active.setGravity(Gravity.CENTER);
+            active.setPadding(12,5,12,5);
+            active.setBackground(shape(index==0?Color.rgb(238,243,250):Color.TRANSPARENT,22));
+            active.addView(ic);
+            active.addView(tx);
+
+            // Keep icon and label visually grouped like a premium tab, not a basic toolbar.
+            item.addView(active,new LinearLayout.LayoutParams(-1,48));
+            item.setOnClickListener(v->{
+                for(int k=0;k<nav.getChildCount();k++){
+                    View child=nav.getChildAt(k);
+                    if(child instanceof LinearLayout){
+                        LinearLayout box=(LinearLayout)((LinearLayout)child).getChildAt(0);
+                        box.setBackground(shape(Color.TRANSPARENT,22));
+                        TextView ii=(TextView)box.getChildAt(0);
+                        TextView tt=(TextView)box.getChildAt(1);
+                        ii.setTextColor(NAVY); tt.setTextColor(MUTED);
+                    }
+                }
+                active.setBackground(shape(Color.rgb(238,243,250),22));
+                ic.setTextColor(RED); tx.setTextColor(RED);
+                active.animate().scaleX(.94f).scaleY(.94f).setDuration(70)
+                    .withEndAction(()->active.animate().scaleX(1f).scaleY(1f).setDuration(130).start()).start();
+                page(pg);
+            });
+            item.setOnTouchListener((v,e)->{
+                if(e.getAction()==MotionEvent.ACTION_DOWN) press(v);
+                return false;
+            });
+            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,58,1);
+            p.setMargins(1,0,1,0);
             nav.addView(item,p);
         }
         return nav;
