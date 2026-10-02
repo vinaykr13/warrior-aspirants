@@ -16,12 +16,12 @@ import org.json.*;
 
 public class MainActivity extends Activity {
     final int NAVY=Color.rgb(7,25,57), NAVY2=Color.rgb(16,44,86), RED=Color.rgb(204,42,50);
-    final int BG=Color.rgb(247,249,252), WHITE=Color.WHITE, DARK=Color.rgb(27,35,48), MUTED=Color.rgb(105,114,130);
+    final int BG=Color.rgb(247,249,252), WHITE=Color.WHITE, DARK=Color.rgb(27,35,48), MUTED=Color.rgb(105,114,130);\n    boolean darkMode=false;
     LinearLayout root,body; ProgressStore store; ArrayList<String> mistakes=new ArrayList<>();
 
     public void onCreate(Bundle b){
         super.onCreate(b);
-        store=new ProgressStore(this); mistakes=store.mistakes();
+        store=new ProgressStore(this); mistakes=store.mistakes();\n        darkMode=getPreferences(MODE_PRIVATE).getBoolean("dark_mode",false); applyThemeBars();
         getWindow().setStatusBarColor(WHITE); getWindow().setNavigationBarColor(WHITE);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         splash();
@@ -52,10 +52,10 @@ public class MainActivity extends Activity {
     TextView title(String s,float size){TextView t=text(s,size,DARK,true);t.setPadding(0,0,0,0);return t;}
     TextView muted(String s,float size){return text(s,size,MUTED,false);}
 
-    void home(){
-        root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(BG);
-        body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,110);
-        ScrollView sc=new ScrollView(this);sc.setBackgroundColor(BG);sc.setOverScrollMode(View.OVER_SCROLL_NEVER);sc.addView(body);
+    void applyThemeBars(){ getWindow().setStatusBarColor(darkMode?NAVY:WHITE); getWindow().setNavigationBarColor(darkMode?NAVY:WHITE); getWindow().getDecorView().setSystemUiVisibility(darkMode?0:View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); }\n    int themeBg(){return darkMode?Color.rgb(13,19,30):BG;}\n    int themeCard(){return darkMode?Color.rgb(25,33,48):WHITE;}\n    int themeText(){return darkMode?Color.rgb(238,242,248):DARK;}\n    int themeMuted(){return darkMode?Color.rgb(165,176,194):MUTED;}\n    void home(){
+        root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(themeBg());
+        body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,110);body.setBackgroundColor(themeBg());
+        ScrollView sc=new ScrollView(this);sc.setBackgroundColor(themeBg());sc.setOverScrollMode(View.OVER_SCROLL_NEVER);sc.addView(body);
         FrameLayout frame=new FrameLayout(this);
         frame.addView(sc,new FrameLayout.LayoutParams(-1,-1));
         View nav=bottomNav();
@@ -401,7 +401,7 @@ public class MainActivity extends Activity {
         action("📤 Share Warrior Aspirants",v->shareApp());action("← Back to Profile",v->page("Profile"));
     }
 
-    void settings(){body.removeAllViews();topTitle("Settings");card("TARGET EXAMS","SSC CGL 2027","Railway • UP SI");card("DAILY TARGET","2 hours","Personalised planner can be expanded.");action("🗑  Reset saved progress",v->{new AlertDialog.Builder(this).setTitle("Reset progress?").setMessage("XP, solved questions and Mistake Book will be cleared.").setNegativeButton("Cancel",null).setPositiveButton("Reset",(d,w)->{getSharedPreferences("warrior_progress",MODE_PRIVATE).edit().clear().apply();store=new ProgressStore(this);mistakes=store.mistakes();toast("Progress reset");page("Profile");}).show();});}
+    void settings(){body.removeAllViews();topTitle("Settings");card("THEME",darkMode?"Dark Mode":"Light Mode","Choose your preferred app appearance."); action(darkMode?"☀️  Switch to Light Mode":"🌙  Switch to Dark Mode",v->{darkMode=!darkMode;getPreferences(MODE_PRIVATE).edit().putBoolean("dark_mode",darkMode).apply();applyThemeBars();home();}); card("TARGET EXAMS","SSC CGL 2027","Railway • UP SI");card("DAILY TARGET","2 hours","Personalised planner can be expanded.");action("🗑  Reset saved progress",v->{new AlertDialog.Builder(this).setTitle("Reset progress?").setMessage("XP, solved questions and Mistake Book will be cleared.").setNegativeButton("Cancel",null).setPositiveButton("Reset",(d,w)->{getSharedPreferences("warrior_progress",MODE_PRIVATE).edit().clear().apply();store=new ProgressStore(this);mistakes=store.mistakes();toast("Progress reset");page("Profile");}).show();});}
     void progress(){body.removeAllViews();topTitle("Progress");card("LEVEL "+store.level(),"XP "+store.xp(),"Preparation "+store.prep()+"% • Accuracy "+store.accuracy()+"% • Streak "+store.streak()+" days");card("LEARNING LOOP","Learn → Practice → Analyze → Improve","Progress is saved on this device.");}
     void openUrl(String u){try{startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(u)));}catch(Exception e){toast("Link open नहीं हुआ.");}}
     void shareApp(){Intent i=new Intent(Intent.ACTION_SEND);i.setType("text/plain");i.putExtra(Intent.EXTRA_TEXT,"Warrior Aspirants — SSC CGL, Railway, UP SI & UPSSSC PET preparation app.");startActivity(Intent.createChooser(i,"Share Warrior Aspirants"));}
