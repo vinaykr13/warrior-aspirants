@@ -261,7 +261,7 @@ public class MainActivity extends Activity {
 
         String[] icons={"⌂","▦","⚡","◉","◯"};
         String[] labels={"Home","Study","Practice","Current","Profile"};
-        String[] pages={"Home","Study","Practice","Current","Profile"};
+        String[] pages={"Home","Study","Practice","Current Affairs","Profile"};
 
         for(int i=0;i<labels.length;i++){
             final String pg=pages[i];
