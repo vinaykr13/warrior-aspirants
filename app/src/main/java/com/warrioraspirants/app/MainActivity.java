@@ -24,8 +24,6 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         store=new ProgressStore(this); mistakes=store.mistakes();
         darkMode=getPreferences(MODE_PRIVATE).getBoolean("dark_mode",false); applyThemeBars();
-        getWindow().setStatusBarColor(WHITE); getWindow().setNavigationBarColor(WHITE);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         splash();
     }
 
