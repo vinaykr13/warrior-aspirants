@@ -34,13 +34,25 @@ public class ProgressStore {
     }
 
     public void saveMistake(String item){
-        LinkedHashSet<String> set = new LinkedHashSet<>(p.getStringSet("mistakes", new LinkedHashSet<>()));
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+        try {
+            set.addAll(p.getStringSet("mistakes", new LinkedHashSet<>()));
+        } catch (ClassCastException ignored) {
+            // Older app versions may have stored this preference in another type.
+            p.edit().remove("mistakes").apply();
+        }
         set.add(item);
         p.edit().putStringSet("mistakes", set).apply();
     }
 
     public ArrayList<String> mistakes(){
-        return new ArrayList<>(p.getStringSet("mistakes", new LinkedHashSet<>()));
+        try {
+            return new ArrayList<>(p.getStringSet("mistakes", new LinkedHashSet<>()));
+        } catch (ClassCastException ignored) {
+            // Recover safely from incompatible data left by an older build.
+            p.edit().remove("mistakes").apply();
+            return new ArrayList<>();
+        }
     }
 
     public void clearMistakes(){
