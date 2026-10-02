@@ -438,6 +438,16 @@ public class MainActivity extends Activity {
             topic(String.format("%03d",n++),b+" — "+f,"Theory • Important points • PYQ • Practice",v->lesson(lessonName));
         }
     }
+    void expandedTopics(String title,String[] bases){
+        section(title+" • COMPLETE TOPIC-WISE ROADMAP");
+        int n=1;
+        String[] facets={"Basics & Definitions","Core Concepts","Rules / Formula","Types & Classification","Important Facts","Solved Examples","PYQ Focus","Practice & Revision"};
+        for(String b:bases) for(String facet:facets){
+            final String lessonName=title+" • "+b+" • "+facet;
+            topic(String.format("%03d",n++),b+" — "+facet,"Theory • Important Points • PYQ • Practice",v->lesson(lessonName));
+        }
+    }
+
     void topics(String s){
         body.removeAllViews(); topTitle(s+" Topics");
         if(s.equals("UP SI")){
@@ -445,10 +455,9 @@ public class MainActivity extends Activity {
             action("🔤 सामान्य हिन्दी • 154 Learning Topics",v->topics("UP SI Hindi"));
             action("⚖️ मूल विधि / संविधान • 182 Learning Topics",v->topics("UP SI Law"));
             action("🌍 सामान्य ज्ञान • 252 Learning Topics",v->topics("UP SI GK"));
-            action("🔢 संख्यात्मक एवं मानसिक योग्यता • 91 Learning Topics",v->topics("UP SI Maths"));
+            action("🔢 संख्यात्मक एवं मानसिक योग्यता • 182 Learning Topics",v->topics("UP SI Maths"));
             action("🧠 मानसिक अभिरुचि / IQ / Reasoning • 210 Learning Topics",v->topics("UP SI Reasoning"));
             action("💻 Computer Science • syllabus-linked topics",v->topics("UP SI Computer"));
-            body.addView(muted("500+ nodes are granular learning topics under official syllabus headings—not 500 unrelated subjects. Each opens Theory / Important Points / PYQ / Practice / Revision.",10));
         } else if(s.equals("UP SI Hindi")){
             upsiExpanded("सामान्य हिन्दी",new String[]{"हिन्दी और अन्य भारतीय भाषाएँ","हिन्दी वर्णमाला","तत्सम-तद्भव","पर्यायवाची","विलोम","अनेकार्थक शब्द","एकार्थी शब्द","वाक्यांश के लिए एक शब्द","समरूपी भिन्नार्थक शब्द","अशुद्ध वाक्य शुद्ध करना","लिंग","वचन","कारक","सर्वनाम","विशेषण","क्रिया","काल","वाच्य","अव्यय","उपसर्ग","प्रत्यय","संधि","समास"});
         } else if(s.equals("UP SI Law")){
@@ -461,17 +470,98 @@ public class MainActivity extends Activity {
             upsiExpanded("मानसिक अभिरुचि / IQ / Reasoning",new String[]{"Logical Diagrams","Symbol-Relationship Interpretation","Perception Test","Word Formation Test","Letter Series","Number Series","Word Analogy","Alphabet Analogy","Common Sense Test","Direction Sense Test","Logical Interpretation of Data","Forcefulness of Argument","Implied Meanings","Analogies","Similarities","Differences","Space Visualization","Problem Solving","Analysis & Judgement","Decision Making","Visual Memory","Discrimination","Observation","Relationship","Concepts","Arithmetical Reasoning","Verbal Classification","Figure Classification","Arithmetical Number Series","Abstract Ideas & Symbols"});
         } else if(s.equals("UP SI Computer")){
             upsiExpanded("Computer Science",new String[]{"Computer History","Computer Evolution","Computer Generations","Computer Organisation","Hardware","Software","Peripheral Devices","Algorithm","Flowchart","Number System","Operating System","Windows Basics","Computer Abbreviations","MS Office","Internet Basics","Shortcut Keys","Computer Communication","Internet","Programming Languages","Web Design","Networking","WWW","Web Browsers","IT Tools","Business Systems","Multimedia","Database Management System","Cyber Security","Digital Communication"});
+        } else if(s.equals("SSC CGL")){
+            section("SSC CGL • COMPLETE SUBJECT-WISE TOPIC ROADMAP");
+            action("📐 Quantitative Aptitude / Mathematical Abilities",v->topics("SSC CGL Maths"));
+            action("🧠 General Intelligence & Reasoning",v->topics("SSC CGL Reasoning"));
+            action("🔤 English Language & Comprehension",v->topics("SSC CGL English"));
+            action("🌍 General Awareness",v->topics("SSC CGL GK"));
+            action("💻 Computer Knowledge (Tier-II)",v->topics("SSC CGL Computer"));
+            action("📊 Statistics (Paper-II, where applicable)",v->topics("SSC CGL Statistics"));
+            action("💰 Finance & Economics (Paper-III, where applicable)",v->topics("SSC CGL Finance"));
+        } else if(s.equals("SSC CGL Maths")){
+            expandedTopics("SSC CGL Maths",new String[]{"Number Systems","Fundamental Arithmetical Operations","Percentage","Ratio & Proportion","Square Roots","Averages","Interest","Profit & Loss","Discount","Partnership Business","Mixture & Alligation","Time & Distance","Time & Work","Algebraic Identities","Elementary Surds","Graphs of Linear Equations","Geometry","Triangles","Circles","Quadrilaterals & Polygons","Mensuration","Trigonometry","Heights & Distances","Data Interpretation","Histogram","Frequency Polygon","Bar Diagram","Pie Chart"});
+        } else if(s.equals("SSC CGL Reasoning")){
+            expandedTopics("SSC CGL Reasoning",new String[]{"Analogies","Classification","Series","Coding-Decoding","Venn Diagrams","Space Visualization","Spatial Orientation","Problem Solving","Analysis","Judgement","Decision Making","Visual Memory","Observation","Relationship Concepts","Arithmetical Reasoning","Verbal Classification","Figure Classification","Non-Verbal Series","Embedded Figures","Pattern Folding","Figural Classification","Statement-Conclusion","Syllogism","Blood Relations","Direction Sense","Alphabet Test","Ranking & Order","Mathematical Operations"});
+        } else if(s.equals("SSC CGL English")){
+            expandedTopics("SSC CGL English",new String[]{"Vocabulary","Synonyms","Antonyms","Homonyms","One Word Substitution","Idioms & Phrases","Spelling","Grammar","Parts of Speech","Noun","Pronoun","Adjective","Verb","Adverb","Preposition","Conjunction","Articles","Tenses","Subject-Verb Agreement","Voice","Narration","Error Detection","Sentence Improvement","Fill in the Blanks","Cloze Test","Para Jumbles","Reading Comprehension","Active Vocabulary","Sentence Arrangement"});
+        } else if(s.equals("SSC CGL GK")){
+            expandedTopics("SSC CGL General Awareness",new String[]{"History","Ancient India","Medieval India","Modern India","Art & Culture","Geography","Physical Geography","Indian Geography","World Geography","Environment","Ecology","Polity","Constitution","Fundamental Rights","Economy","Indian Economy","Physics","Chemistry","Biology","General Science","Scientific Research","Current Affairs","Sports","Awards & Honours","Books & Authors","Important Days","People & Places","India & Neighbours","Government Schemes"});
+        } else if(s.equals("SSC CGL Computer")){
+            expandedTopics("SSC CGL Computer",new String[]{"Computer Basics","CPU & Memory","Input-Output Devices","Computer Hardware","Software","Operating Systems","Windows","MS Word","MS Excel","MS PowerPoint","Internet","WWW","Web Browsers","E-mail","Networking","Cyber Security","Computer Abbreviations","Keyboard Shortcuts","Digital Communication","Computer Generations"});
+        } else if(s.equals("SSC CGL Statistics")){
+            expandedTopics("SSC CGL Statistics",new String[]{"Collection of Data","Classification of Data","Presentation of Data","Measures of Central Tendency","Mean","Median","Mode","Measures of Dispersion","Range","Mean Deviation","Standard Deviation","Variance","Moments","Skewness","Kurtosis","Correlation","Regression","Probability","Sampling","Index Numbers","Time Series"});
+        } else if(s.equals("SSC CGL Finance")){
+            expandedTopics("SSC CGL Finance & Economics",new String[]{"Financial Accounting","Accounting Principles","Basic Concepts of Accounting","Journal","Ledger","Trial Balance","Balance Sheet","Profit & Loss Account","Depreciation","Economics Basics","Demand & Supply","National Income","Population","Poverty","Unemployment","Infrastructure","Economic Reforms","Liberalisation","Privatisation","Globalisation","Money & Banking","RBI","Commercial Banks","Fiscal Policy","Monetary Policy","Budget","Fiscal Deficit","Balance of Payments","FRBM","IT in Governance"});
         } else if(s.equals("Railway")){
-            section("RAILWAY • SUBJECTS");action("📐 Maths",v->topics("Maths"));action("🧠 Reasoning",v->topics("Reasoning"));action("🔤 English",v->topics("English"));action("🌍 GK / GS",v->topics("GK / GS"));
+            section("RAILWAY • COMPLETE SUBJECT-WISE ROADMAP");
+            action("📐 Mathematics",v->topics("Railway Maths"));
+            action("🧠 General Intelligence & Reasoning",v->topics("Railway Reasoning"));
+            action("🌍 General Awareness",v->topics("Railway GA"));
+            action("🔬 General Science",v->topics("Railway Science"));
+            action("💻 Basic Computer / post-specific",v->topics("Railway Computer"));
+        } else if(s.equals("Railway Maths")){
+            expandedTopics("Railway Mathematics",new String[]{"Number System","BODMAS","Decimals","Fractions","LCM","HCF","Ratio & Proportion","Percentage","Mensuration","Time & Work","Time & Distance","Simple Interest","Compound Interest","Profit & Loss","Algebra","Geometry","Trigonometry","Elementary Statistics","Square Root","Age Calculations","Calendar","Clock","Pipes & Cistern","Data Interpretation","Average","Partnership","Mixture & Alligation"});
+        } else if(s.equals("Railway Reasoning")){
+            expandedTopics("Railway Reasoning",new String[]{"Analogies","Alphabetical Series","Number Series","Coding-Decoding","Mathematical Operations","Relationships","Syllogism","Jumbling","Venn Diagram","Data Interpretation","Data Sufficiency","Conclusions","Decision Making","Similarities","Differences","Analytical Reasoning","Classification","Directions","Statement-Arguments","Statement-Assumptions","Blood Relations","Ranking","Non-Verbal Reasoning"});
+        } else if(s.equals("Railway GA")){
+            expandedTopics("Railway General Awareness",new String[]{"Current Affairs","Science & Technology","Sports","Culture","Personalities","Economics","Politics","Indian History","Geography","Indian Polity","Constitution","Environment","Government Schemes","Awards","Books & Authors","Important Days","Countries & Capitals","Railway Awareness","Indian Economy","National Organisations","International Organisations"});
+        } else if(s.equals("Railway Science")){
+            expandedTopics("Railway General Science",new String[]{"Physics","Motion","Force","Work Energy Power","Heat","Light","Sound","Electricity","Magnetism","Chemistry","Matter","Atom & Molecule","Periodic Table","Chemical Reactions","Acids Bases Salts","Metals Non-metals","Carbon Compounds","Biology","Cell","Human Body","Nutrition","Diseases","Plant Biology","Genetics","Environment"});
+        } else if(s.equals("Railway Computer")){
+            expandedTopics("Railway Computer",new String[]{"Computer Fundamentals","Hardware","Software","Operating System","MS Office","Internet","Networking","Cyber Security","Memory","Input Output","Shortcut Keys","Computer Abbreviations","Digital Communication"});
+        } else if(s.equals("UPSSSC PET")){
+            section("UPSSSC PET • COMPLETE SUBJECT-WISE ROADMAP");
+            action("📚 Hindi",v->topics("PET Hindi"));
+            action("🌍 Indian History & National Movement",v->topics("PET History"));
+            action("🗺️ Geography",v->topics("PET Geography"));
+            action("⚖️ Indian Constitution & Public Administration",v->topics("PET Polity"));
+            action("💰 Indian Economy",v->topics("PET Economy"));
+            action("🔬 General Science",v->topics("PET Science"));
+            action("🔢 Elementary Arithmetic",v->topics("PET Maths"));
+            action("🧠 General Hindi & Reasoning",v->topics("PET Reasoning"));
+            action("📊 Graph / Table / Data Interpretation",v->topics("PET DI"));
+            action("📰 Current Affairs & General Awareness",v->topics("PET Current"));
+            action("📖 Unseen Passage / Comprehension",v->topics("PET Passage"));
+            action("🌾 UP-specific / miscellaneous awareness",v->topics("PET UP"));
+        } else if(s.equals("PET Hindi")){
+            expandedTopics("PET Hindi",new String[]{"Hindi Grammar","Sandhi","Samas","Upsarg","Pratyay","Synonyms","Antonyms","One Word Substitution","Idioms & Phrases","Sentence Correction","Spelling","Gender","Number","Case","Pronoun","Adjective","Verb","Tatsam-Tadbhav"});
+        } else if(s.equals("PET History")){
+            expandedTopics("PET History",new String[]{"Indus Valley Civilization","Vedic Period","Buddhism","Jainism","Maurya Empire","Gupta Empire","Medieval India","Delhi Sultanate","Mughal Empire","Bhakti Movement","Sufi Movement","British Rule","Revolt of 1857","Social Reform Movements","Indian National Congress","Gandhian Era","Non-Cooperation","Civil Disobedience","Quit India","Independence & Partition"});
+        } else if(s.equals("PET Geography")){
+            expandedTopics("PET Geography",new String[]{"Earth","Latitudes & Longitudes","India Physical Features","Rivers","Climate","Soils","Forests","Agriculture","Minerals","Industries","Population","Transport","World Geography","Natural Resources","Environment","Disaster Awareness"});
+        } else if(s.equals("PET Polity")){
+            expandedTopics("PET Polity",new String[]{"Constitution","Preamble","Fundamental Rights","DPSP","Fundamental Duties","President","Vice President","Prime Minister","Parliament","Supreme Court","High Courts","Governor","Chief Minister","State Legislature","Local Government","Panchayati Raj","Election Commission","Constitutional Bodies","Public Administration"});
+        } else if(s.equals("PET Economy")){
+            expandedTopics("PET Economy",new String[]{"Indian Economy Basics","GDP","National Income","Inflation","Poverty","Unemployment","Banking","RBI","Budget","Taxation","Fiscal Policy","Monetary Policy","Agriculture Economy","Industry","Infrastructure","Economic Planning","Government Schemes","Financial Inclusion"});
+        } else if(s.equals("PET Science")){
+            expandedTopics("PET Science",new String[]{"Physics","Chemistry","Biology","Motion","Force","Energy","Heat","Light","Sound","Electricity","Matter","Atom","Chemical Reactions","Acids Bases Salts","Metals","Cell","Human Body","Nutrition","Diseases","Plants","Environment","Everyday Science"});
+        } else if(s.equals("PET Maths")){
+            expandedTopics("PET Elementary Arithmetic",new String[]{"Number System","Whole Numbers","Fractions","Decimals","HCF","LCM","Ratio","Percentage","Profit & Loss","Simple Interest","Average","Time & Work","Time & Distance","Unitary Method","Mensuration","Tables","Arithmetic Computation"});
+        } else if(s.equals("PET Reasoning")){
+            expandedTopics("PET Reasoning",new String[]{"Analogy","Classification","Series","Coding-Decoding","Blood Relations","Direction","Ranking","Venn Diagram","Syllogism","Statement-Conclusion","Alphabet Test","Calendar","Clock","Non-Verbal Reasoning","Logical Reasoning"});
+        } else if(s.equals("PET DI")){
+            expandedTopics("PET Data Interpretation",new String[]{"Tables","Bar Graph","Line Graph","Pie Chart","Histogram","Data Comparison","Percentage-based DI","Ratio-based DI","Average-based DI","Data Sufficiency"});
+        } else if(s.equals("PET Current")){
+            expandedTopics("PET Current Affairs & GA",new String[]{"National Current Affairs","International Current Affairs","Science & Technology","Sports","Awards","Books & Authors","Important Days","Government Schemes","Appointments","Places in News","Defence","Economy","Environment"});
+        } else if(s.equals("PET Passage")){
+            expandedTopics("PET Unseen Passage",new String[]{"Reading Comprehension","Main Idea","Title","Inference","Vocabulary in Context","Fact vs Inference","Sequence","Tone","Conclusion"});
+        } else if(s.equals("PET UP")){
+            expandedTopics("PET Uttar Pradesh & Miscellaneous",new String[]{"UP Geography","UP History","UP Culture","UP Festivals","UP Rivers","UP Agriculture","UP Economy","UP Government Schemes","UP Current Affairs","Important Personalities","Books & Authors","Sports","Awards"});
         } else if(s.equals("Maths")){
-            topic("01","Number System","Basics, divisibility, HCF / LCM",v->lesson("Number System"));topic("02","Simplification","BODMAS",v->lesson("Percentage"));topic("03","HCF & LCM","Factors and multiples",v->lesson("Number System"));topic("04","Percentage","Increase, decrease, successive",v->lesson("Percentage"));topic("05","Ratio & Proportion","Applications",v->lesson("Ratio & Proportion"));topic("06","Average","Mean and weighted average",v->lesson("Average"));topic("07","Profit & Loss","CP, SP and discount",v->lesson("Profit & Loss"));topic("08","Time & Work","Efficiency and work",v->lesson("Time & Work"));topic("09","TSD","Speed, distance and trains",v->lesson("Time, Speed & Distance"));topic("10","Algebra","Identities and equations",v->lesson("Algebra"));topic("11","Geometry","Lines, angles, triangles",v->lesson("Geometry & Mensuration"));topic("12","Trigonometry","Ratios and standard values",v->lesson("Trigonometry"));
+            topics("SSC CGL Maths");
         } else if(s.equals("Reasoning")){
-            topic("01","Analogy","Same relationship",v->lesson("Analogy"));topic("02","Classification","Odd one out",v->lesson("Classification"));topic("03","Series","Number and alphabet series",v->lesson("Series"));topic("04","Coding-Decoding","Patterns",v->lesson("Coding-Decoding"));topic("05","Blood Relation","Family relations",v->lesson("Blood Relation"));topic("06","Direction","Distance and paths",v->lesson("Direction & Distance"));topic("07","Syllogism","Statements and conclusions",v->lesson("Syllogism"));topic("08","Venn Diagram","Set relationships",v->lesson("Venn Diagram"));
+            topics("SSC CGL Reasoning");
         } else if(s.equals("English")){
-            topic("01","Parts of Speech","Grammar basics",v->lesson("Parts of Speech"));topic("02","Tenses","Present, past, future",v->lesson("Tenses"));topic("03","Subject-Verb Agreement","Rules",v->lesson("Subject-Verb Agreement"));topic("04","Articles","A, An, The",v->lesson("Articles"));topic("05","Prepositions","Usage",v->lesson("Prepositions"));topic("06","Voice","Active & Passive",v->lesson("Active & Passive Voice"));topic("07","Narration","Direct & indirect",v->lesson("Narration"));topic("08","Error Detection","Common grammar errors",v->lesson("Error Detection"));
+            topics("SSC CGL English");
         } else if(s.equals("GK / GS")){
-            topic("01","History","Ancient, Medieval, Modern",v->lesson("History"));topic("02","Geography","India and world",v->lesson("Geography"));topic("03","Polity","Constitution",v->lesson("Polity"));topic("04","Economy","Basic concepts",v->lesson("Economy"));topic("05","Physics","Motion, energy, electricity",v->lesson("Physics"));topic("06","Chemistry","Matter and reactions",v->lesson("Chemistry"));topic("07","Biology","Cells, body, plants",v->lesson("Biology"));
-        } else {section("SELECT SUBJECT");action("📐 Maths",v->topics("Maths"));action("🧠 Reasoning",v->topics("Reasoning"));action("🔤 English",v->topics("English"));action("🌍 GK / GS",v->topics("GK / GS"));}
+            topics("SSC CGL GK");
+        } else {
+            section("SELECT SUBJECT");
+            action("📐 SSC CGL",v->topics("SSC CGL"));
+            action("🚆 Railway",v->topics("Railway"));
+            action("🟢 UPSSSC PET",v->topics("UPSSSC PET"));
+        }
         action("← Back to Study",v->page("Study"));
     }
 
