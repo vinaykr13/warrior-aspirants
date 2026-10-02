@@ -61,12 +61,12 @@ public class MainActivity extends Activity {
     int themeMuted(){return darkMode?Color.rgb(165,176,194):MUTED;}
     void home(){
         root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(themeBg());
-        body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,110);body.setBackgroundColor(themeBg());
+        body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,124);body.setBackgroundColor(themeBg());
         ScrollView sc=new ScrollView(this);sc.setBackgroundColor(themeBg());sc.setOverScrollMode(View.OVER_SCROLL_NEVER);sc.addView(body);
         FrameLayout frame=new FrameLayout(this);
         frame.addView(sc,new FrameLayout.LayoutParams(-1,-1));
         View nav=bottomNav();
-        FrameLayout.LayoutParams np=new FrameLayout.LayoutParams(-1,76,Gravity.BOTTOM);
+        FrameLayout.LayoutParams np=new FrameLayout.LayoutParams(-1,92,Gravity.BOTTOM);
         np.setMargins(18,0,18,14);
         frame.addView(nav,np);
         root.addView(frame,new LinearLayout.LayoutParams(-1,0,1));
@@ -262,9 +262,9 @@ public class MainActivity extends Activity {
         LinearLayout nav=new LinearLayout(this);
         nav.setOrientation(LinearLayout.HORIZONTAL);
         nav.setGravity(Gravity.CENTER);
-        nav.setPadding(10,9,10,9);
-        nav.setBackground(gradient(Color.rgb(255,255,255),Color.rgb(248,250,253),30));
-        nav.setElevation(20);
+        nav.setPadding(8,7,8,7);
+        nav.setBackground(gradient(Color.rgb(255,255,255),Color.rgb(244,247,251),30));
+        nav.setElevation(22);
 
         String[] icons={"⌂","▦","⚡","◉","◯"};
         String[] labels={"Home","Study","Practice","Current","Profile"};
@@ -276,44 +276,46 @@ public class MainActivity extends Activity {
             LinearLayout item=new LinearLayout(this);
             item.setOrientation(LinearLayout.VERTICAL);
             item.setGravity(Gravity.CENTER);
-            item.setPadding(3,3,3,3);
-
-            TextView ic=text(icons[i],24,NAVY,true);
-            ic.setGravity(Gravity.CENTER);
-            TextView tx=text(labels[i],12,MUTED,true);
-            tx.setGravity(Gravity.CENTER);
+            item.setPadding(2,2,2,2);
 
             LinearLayout active=new LinearLayout(this);
+            active.setOrientation(LinearLayout.VERTICAL);
             active.setGravity(Gravity.CENTER);
-            active.setPadding(15,7,15,7);
-            active.setBackground(shape(index==0?Color.rgb(238,243,250):Color.TRANSPARENT,22));
-            active.addView(ic);
-            active.addView(tx);
+            active.setPadding(9,5,9,5);
+            active.setBackground(shape(index==0?Color.rgb(235,241,250):Color.TRANSPARENT,20));
 
-            // Keep icon and label visually grouped like a premium tab, not a basic toolbar.
-            item.addView(active,new LinearLayout.LayoutParams(-1,58));
+            TextView ic=text(icons[i],29,index==0?RED:NAVY,true);
+            ic.setGravity(Gravity.CENTER);
+            TextView tx=text(labels[i],12.5f,index==0?NAVY:MUTED,true);
+            tx.setGravity(Gravity.CENTER);
+            active.addView(ic,new LinearLayout.LayoutParams(-1,36));
+            active.addView(tx,new LinearLayout.LayoutParams(-1,22));
+
+            item.addView(active,new LinearLayout.LayoutParams(-1,70));
             item.setOnClickListener(v->{
                 for(int k=0;k<nav.getChildCount();k++){
                     View child=nav.getChildAt(k);
                     if(child instanceof LinearLayout){
                         LinearLayout box=(LinearLayout)((LinearLayout)child).getChildAt(0);
-                        box.setBackground(shape(Color.TRANSPARENT,22));
+                        box.setBackground(shape(Color.TRANSPARENT,20));
                         TextView ii=(TextView)box.getChildAt(0);
                         TextView tt=(TextView)box.getChildAt(1);
-                        ii.setTextColor(NAVY); tt.setTextColor(MUTED);
+                        ii.setTextColor(NAVY);
+                        tt.setTextColor(MUTED);
                     }
                 }
-                active.setBackground(shape(Color.rgb(238,243,250),22));
-                ic.setTextColor(RED); tx.setTextColor(RED);
+                active.setBackground(shape(Color.rgb(235,241,250),20));
+                ic.setTextColor(RED);
+                tx.setTextColor(NAVY);
                 active.animate().scaleX(.94f).scaleY(.94f).setDuration(70)
-                    .withEndAction(()->active.animate().scaleX(1f).scaleY(1f).setDuration(130).start()).start();
+                    .withEndAction(()->active.animate().scaleX(1f).scaleY(1f).setDuration(140).start()).start();
                 page(pg);
             });
             item.setOnTouchListener((v,e)->{
                 if(e.getAction()==MotionEvent.ACTION_DOWN) press(v);
                 return false;
             });
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,68,1);
+            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,76,1);
             p.setMargins(1,0,1,0);
             nav.addView(item,p);
         }
