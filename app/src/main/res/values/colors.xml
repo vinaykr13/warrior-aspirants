@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_navy_dark">#0A192F</color>
+    <color name="primary_navy">#0D1B2A</color>
+    <color name="surface_navy_light">#172A45</color>
+    <color name="card_navy">#1B2A4A</color>
+    <color name="card_stroke">#233554</color>
+    <color name="accent_red">#E63946</color>
+    <color name="accent_red_glow">#33E63946</color>
+    <color name="accent_gold">#FFD166</color>
+    <color name="accent_green">#06D6A0</color>
+    <color name="text_primary">#F8F9FA</color>
+    <color name="text_secondary">#8892B0</color>
+    <color name="text_muted">#606B82</color>
+    <color name="nav_background">#0E1E38</color>
+    <color name="nav_active">#E63946</color>
+    <color name="nav_inactive">#8892B0</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+</resources>
