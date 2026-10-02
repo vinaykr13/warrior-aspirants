@@ -16,12 +16,14 @@ import org.json.*;
 
 public class MainActivity extends Activity {
     final int NAVY=Color.rgb(7,25,57), NAVY2=Color.rgb(16,44,86), RED=Color.rgb(204,42,50);
-    final int BG=Color.rgb(247,249,252), WHITE=Color.WHITE, DARK=Color.rgb(27,35,48), MUTED=Color.rgb(105,114,130);\n    boolean darkMode=false;
+    final int BG=Color.rgb(247,249,252), WHITE=Color.WHITE, DARK=Color.rgb(27,35,48), MUTED=Color.rgb(105,114,130);
+    boolean darkMode=false;
     LinearLayout root,body; ProgressStore store; ArrayList<String> mistakes=new ArrayList<>();
 
     public void onCreate(Bundle b){
         super.onCreate(b);
-        store=new ProgressStore(this); mistakes=store.mistakes();\n        darkMode=getPreferences(MODE_PRIVATE).getBoolean("dark_mode",false); applyThemeBars();
+        store=new ProgressStore(this); mistakes=store.mistakes();
+        darkMode=getPreferences(MODE_PRIVATE).getBoolean("dark_mode",false); applyThemeBars();
         getWindow().setStatusBarColor(WHITE); getWindow().setNavigationBarColor(WHITE);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         splash();
@@ -41,7 +43,8 @@ public class MainActivity extends Activity {
         l.setPadding(28,20,28,20); l.setBackgroundColor(NAVY);
         ImageView logo=new ImageView(this); logo.setImageResource(R.drawable.warrior_icon); logo.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         l.addView(logo,new LinearLayout.LayoutParams(-1,220));
-        TextView a=text("WARRIOR ASPIRANTS",28,WHITE,true), q=text("Build the Empire.\nThe Queen Will Come.",17,Color.LTGRAY,true);
+        TextView a=text("WARRIOR ASPIRANTS",28,WHITE,true), q=text("Build the Empire.
+The Queen Will Come.",17,Color.LTGRAY,true);
         a.setGravity(Gravity.CENTER);q.setGravity(Gravity.CENTER);l.addView(a);l.addView(q);setContentView(l);
         logo.setAlpha(0);logo.setScaleX(.8f);logo.setScaleY(.8f);a.setAlpha(0);q.setAlpha(0);
         logo.animate().alpha(1).scaleX(1).scaleY(1).setDuration(650);
@@ -52,7 +55,12 @@ public class MainActivity extends Activity {
     TextView title(String s,float size){TextView t=text(s,size,DARK,true);t.setPadding(0,0,0,0);return t;}
     TextView muted(String s,float size){return text(s,size,MUTED,false);}
 
-    void applyThemeBars(){ getWindow().setStatusBarColor(darkMode?NAVY:WHITE); getWindow().setNavigationBarColor(darkMode?NAVY:WHITE); getWindow().getDecorView().setSystemUiVisibility(darkMode?0:View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); }\n    int themeBg(){return darkMode?Color.rgb(13,19,30):BG;}\n    int themeCard(){return darkMode?Color.rgb(25,33,48):WHITE;}\n    int themeText(){return darkMode?Color.rgb(238,242,248):DARK;}\n    int themeMuted(){return darkMode?Color.rgb(165,176,194):MUTED;}\n    void home(){
+    void applyThemeBars(){ getWindow().setStatusBarColor(darkMode?NAVY:WHITE); getWindow().setNavigationBarColor(darkMode?NAVY:WHITE); getWindow().getDecorView().setSystemUiVisibility(darkMode?0:View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); }
+    int themeBg(){return darkMode?Color.rgb(13,19,30):BG;}
+    int themeCard(){return darkMode?Color.rgb(25,33,48):WHITE;}
+    int themeText(){return darkMode?Color.rgb(238,242,248):DARK;}
+    int themeMuted(){return darkMode?Color.rgb(165,176,194):MUTED;}
+    void home(){
         root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(themeBg());
         body=new LinearLayout(this);body.setOrientation(LinearLayout.VERTICAL);body.setPadding(18,8,18,110);body.setBackgroundColor(themeBg());
         ScrollView sc=new ScrollView(this);sc.setBackgroundColor(themeBg());sc.setOverScrollMode(View.OVER_SCROLL_NEVER);sc.addView(body);
@@ -244,7 +252,10 @@ public class MainActivity extends Activity {
 
     void gridRow(LinearLayout parent,String[] labels,View.OnClickListener[] ls){
         LinearLayout r=new LinearLayout(this);r.setWeightSum(3);
-        for(int i=0;i<3;i++){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setGravity(Gravity.CENTER);c.setPadding(4,8,4,8);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));TextView ic=text(labels[i].split("\n")[0],20,RED,true);ic.setGravity(Gravity.CENTER);c.addView(ic);String[] parts=labels[i].split("\n");StringBuilder z=new StringBuilder();for(int k=1;k<parts.length;k++){if(k>1)z.append("\n");z.append(parts[k]);}TextView n=text(z.toString(),12,DARK,true);n.setGravity(Gravity.CENTER);c.addView(n);c.setOnClickListener(ls[i]);c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,86,1);p.setMargins(3,3,3,3);r.addView(c,p);animateView(c,70+i*40);}parent.addView(r);
+        for(int i=0;i<3;i++){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setGravity(Gravity.CENTER);c.setPadding(4,8,4,8);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),16));TextView ic=text(labels[i].split("
+")[0],20,RED,true);ic.setGravity(Gravity.CENTER);c.addView(ic);String[] parts=labels[i].split("
+");StringBuilder z=new StringBuilder();for(int k=1;k<parts.length;k++){if(k>1)z.append("
+");z.append(parts[k]);}TextView n=text(z.toString(),12,DARK,true);n.setGravity(Gravity.CENTER);c.addView(n);c.setOnClickListener(ls[i]);c.setOnTouchListener((v,e)->{if(e.getAction()==MotionEvent.ACTION_DOWN)press(v);return false;});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,86,1);p.setMargins(3,3,3,3);r.addView(c,p);animateView(c,70+i*40);}parent.addView(r);
     }
 
     void newsCard(String s){LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);c.setPadding(12,10,12,10);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));c.addView(text(s,13,DARK,true));c.addView(muted("Today  •  1 min read",9));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,3,0,5);body.addView(c,p);}
@@ -376,7 +387,8 @@ public class MainActivity extends Activity {
         action("←  Back to Study",v->page("Study"));
     }
 
-    void topic(String no,String name,String sub,View.OnClickListener l){LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(9,5,9,5);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));TextView n=text(no,10,RED,true);n.setGravity(Gravity.CENTER);n.setBackground(shape(Color.rgb(255,240,241),14));c.addView(n,new LinearLayout.LayoutParams(42,52));LinearLayout mid=new LinearLayout(this);mid.setOrientation(LinearLayout.VERTICAL);mid.setPadding(12,0,4,0);mid.addView(title(name,15));mid.addView(muted(sub+"\nProgress • Difficulty • Questions",9));c.addView(mid,new LinearLayout.LayoutParams(0,64,1));TextView go=text("›",29,RED,true);go.setGravity(Gravity.CENTER);c.addView(go,new LinearLayout.LayoutParams(38,64));c.setOnClickListener(l);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,72);p.setMargins(0,4,0,4);body.addView(c,p);animateView(c,body.getChildCount()*15);}
+    void topic(String no,String name,String sub,View.OnClickListener l){LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(9,5,9,5);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));TextView n=text(no,10,RED,true);n.setGravity(Gravity.CENTER);n.setBackground(shape(Color.rgb(255,240,241),14));c.addView(n,new LinearLayout.LayoutParams(42,52));LinearLayout mid=new LinearLayout(this);mid.setOrientation(LinearLayout.VERTICAL);mid.setPadding(12,0,4,0);mid.addView(title(name,15));mid.addView(muted(sub+"
+Progress • Difficulty • Questions",9));c.addView(mid,new LinearLayout.LayoutParams(0,64,1));TextView go=text("›",29,RED,true);go.setGravity(Gravity.CENTER);c.addView(go,new LinearLayout.LayoutParams(38,64));c.setOnClickListener(l);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,72);p.setMargins(0,4,0,4);body.addView(c,p);animateView(c,body.getChildCount()*15);}
 
     void lesson(String t){body.removeAllViews();topTitle(t);card("OFFLINE LESSON","Theory • Concepts • Important Points","पूरा basic study material app में offline उपलब्ध है.");body.addView(text("📚 THEORY",11,RED,true));body.addView(text(theory(t),14,DARK,false));body.addView(text("💡 CONCEPT",11,RED,true));body.addView(text("Concept ko pehle samjho, phir formula/rule apply karo. Upar di gayi theory ko step-by-step padho aur example se verify karo.",14,DARK,false));body.addView(text("⭐ IMPORTANT POINTS",11,RED,true));body.addView(text(trick(t),14,DARK,false));body.addView(text("📝 SOLVED EXAMPLE",11,RED,true));body.addView(text(example(t),14,DARK,false));action("🎯  Practice Offline",v->practiceTopic(t));action("📚  PYQs",v->pyqTopic(t));action("🤖  Ask Fighter AI",v->fighter());}
     StudyContent.Lesson material(String t){return StudyContent.get(t);} String theory(String t){return material(t).theory;}String example(String t){return material(t).example;}String trick(String t){return material(t).trick;}
