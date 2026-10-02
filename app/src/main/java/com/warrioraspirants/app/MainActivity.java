@@ -432,7 +432,43 @@ public class MainActivity extends Activity {
 
     void topic(String no,String name,String sub,View.OnClickListener l){LinearLayout c=new LinearLayout(this);c.setGravity(Gravity.CENTER_VERTICAL);c.setPadding(9,5,9,5);c.setBackground(stroke(WHITE,Color.rgb(225,229,236),15));TextView n=text(no,10,RED,true);n.setGravity(Gravity.CENTER);n.setBackground(shape(Color.rgb(255,240,241),14));c.addView(n,new LinearLayout.LayoutParams(42,52));LinearLayout mid=new LinearLayout(this);mid.setOrientation(LinearLayout.VERTICAL);mid.setPadding(12,0,4,0);mid.addView(title(name,15));mid.addView(muted(sub+"\nProgress • Difficulty • Questions",9));c.addView(mid,new LinearLayout.LayoutParams(0,64,1));TextView go=text("›",29,RED,true);go.setGravity(Gravity.CENTER);c.addView(go,new LinearLayout.LayoutParams(38,64));c.setOnClickListener(l);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,72);p.setMargins(0,4,0,4);body.addView(c,p);animateView(c,body.getChildCount()*15);}
 
-    void lesson(String t){body.removeAllViews();topTitle(t);card("OFFLINE LESSON","Theory • Concepts • Important Points","पूरा basic study material app में offline उपलब्ध है.");body.addView(text("📚 THEORY",11,RED,true));body.addView(text(theory(t),14,DARK,false));body.addView(text("💡 CONCEPT",11,RED,true));body.addView(text("Concept ko pehle samjho, phir formula/rule apply karo. Upar di gayi theory ko step-by-step padho aur example se verify karo.",14,DARK,false));body.addView(text("⭐ IMPORTANT POINTS",11,RED,true));body.addView(text(trick(t),14,DARK,false));body.addView(text("📝 SOLVED EXAMPLE",11,RED,true));body.addView(text(example(t),14,DARK,false));action("🎯  Practice Offline",v->practiceTopic(t));action("📚  PYQs",v->pyqTopic(t));action("🤖  Ask Fighter AI",v->fighter());}
+    void lesson(String t){
+        body.removeAllViews(); topTitle(t);
+        card("OFFLINE LESSON","Theory • Concept • Important Points","Topic-wise study flow • Learn first, then practice");
+        body.addView(text("📖 THEORY",11,RED,true));
+        body.addView(text(theory(t),14,themeText(),false));
+        body.addView(text("🧠 CORE CONCEPT",11,RED,true));
+        body.addView(text(concept(t),14,themeText(),false));
+        body.addView(text("📐 FORMULA / RULES",11,RED,true));
+        body.addView(text(formula(t),14,themeText(),false));
+        body.addView(text("⭐ IMPORTANT POINTS / TRICK",11,RED,true));
+        body.addView(text(trick(t),14,themeText(),false));
+        body.addView(text("📝 SOLVED EXAMPLE",11,RED,true));
+        body.addView(text(example(t),14,themeText(),false));
+        action("🎯  Start 10-Question Practice",v->practiceTopic(t));
+        action("📚  Topic-wise PYQs",v->pyqTopic(t));
+        action("🤖  Ask Fighter AI",v->fighter());
+    }
+    String concept(String t){
+        return "Step 1: Question me given information identify karo.\nStep 2: Is topic ka relevant rule/formula choose karo.\nStep 3: Values substitute karke calculation karo.\nStep 4: Answer ko unit/logic se verify karo.\n\nSSC CGL approach: pehle accuracy, phir calculation speed.";
+    }
+    String formula(String t){
+        if(t.equals("Percentage")) return "p% = p/100 × quantity\nNew value after increase p% = Old × (100+p)/100\nNew value after decrease p% = Old × (100-p)/100\n% change = (Difference/Original) × 100";
+        if(t.equals("Ratio & Proportion")) return "a:b = c:d ⇒ ad = bc\nIf a:b=m:n, then a=mk, b=nk";
+        if(t.equals("Average")) return "Average = Sum ÷ Number of observations\nSum = Average × Number";
+        if(t.equals("Profit & Loss")) return "Profit = SP − CP\nLoss = CP − SP\nProfit% = Profit/CP × 100\nLoss% = Loss/CP × 100\nDiscount% = Discount/MP × 100";
+        if(t.equals("Time & Work")) return "One-day work = 1/Days\nCombined work rate = individual rates ka sum";
+        if(t.equals("Time, Speed & Distance")) return "Speed = Distance/Time\nDistance = Speed × Time\nTime = Distance/Speed\n1 m/s = 18/5 km/h";
+        if(t.equals("Algebra")) return "(a+b)^2 = a^2+2ab+b^2\n(a-b)^2 = a^2−2ab+b^2\na^2−b^2 = (a-b)(a+b)";
+        if(t.equals("Geometry & Mensuration")) return "Triangle area = 1/2 × base × height\nCircle area = πr²\nCircle circumference = 2πr\nRectangle area = l×b";
+        if(t.equals("Trigonometry")) return "sinθ=P/H\ncosθ=B/H\ntanθ=P/B\nsin²θ+cos²θ=1";
+        if(t.equals("Subject-Verb Agreement")) return "Singular subject → singular verb\nPlural subject → plural verb\nEach/Every/Either/Neither → generally singular verb";
+        if(t.equals("Active & Passive Voice")) return "Passive structure generally uses be + V3\nTense of the original sentence must be preserved";
+        if(t.equals("Polity")) return "Topic template: Body → Composition → Term → Powers → Constitutional basis";
+        if(t.equals("Physics")) return "V=IR\nP=VI\nW=F×s (same direction case)\nKE=1/2 mv²";
+        return "Rule/definition ko example ke saath apply karo. Exam me keyword identify karna first step hai.";
+    }
+
     StudyContent.Lesson material(String t){return StudyContent.get(t);} String theory(String t){return material(t).theory;}String example(String t){return material(t).example;}String trick(String t){return material(t).trick;}
 
     void practice(){practiceTopic("Mixed Practice");}
