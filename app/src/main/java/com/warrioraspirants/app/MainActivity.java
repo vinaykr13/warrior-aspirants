@@ -303,11 +303,11 @@ public class MainActivity extends Activity {
         LinearLayout nav=new LinearLayout(this);
         nav.setOrientation(LinearLayout.HORIZONTAL);
         nav.setGravity(Gravity.CENTER);
-        nav.setPadding(8,7,8,7);
-        nav.setBackground(gradient(Color.rgb(255,255,255),Color.rgb(244,247,251),30));
+        nav.setPadding(7,6,7,6);
+        nav.setBackground(getDrawable(R.drawable.bg_floating_bottom_nav));
         nav.setElevation(22);
 
-        String[] icons={"⌂","▦","⚡","◉","◯"};
+        String[] icons={"ic_nav_home","ic_nav_study","ic_nav_practice","ic_nav_current","ic_nav_profile"};
         String[] labels={"Home","Study","Practice","Current","Profile"};
         String[] pages={"Home","Study","Practice","Current Affairs","Profile"};
 
@@ -322,32 +322,37 @@ public class MainActivity extends Activity {
             LinearLayout active=new LinearLayout(this);
             active.setOrientation(LinearLayout.VERTICAL);
             active.setGravity(Gravity.CENTER);
-            active.setPadding(9,5,9,5);
-            active.setBackground(shape(index==0?Color.rgb(235,241,250):Color.TRANSPARENT,20));
+            active.setPadding(8,4,8,4);
+            active.setBackground(shape(index==0?Color.rgb(38,48,73):Color.TRANSPARENT,18));
 
-            TextView ic=text(icons[i],29,index==0?RED:NAVY,true);
-            ic.setGravity(Gravity.CENTER);
-            TextView tx=text(labels[i],12.5f,index==0?NAVY:MUTED,true);
+            ImageView ic=new ImageView(this);
+            int iconId=getResources().getIdentifier(icons[i],"drawable",getPackageName());
+            ic.setImageResource(iconId);
+            ic.setColorFilter(index==0?RED:Color.rgb(136,146,176));
+            ic.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+            TextView tx=text(labels[i],12.5f,index==0?WHITE:Color.rgb(136,146,176),true);
             tx.setGravity(Gravity.CENTER);
-            active.addView(ic,new LinearLayout.LayoutParams(-1,36));
-            active.addView(tx,new LinearLayout.LayoutParams(-1,22));
 
-            item.addView(active,new LinearLayout.LayoutParams(-1,70));
+            active.addView(ic,new LinearLayout.LayoutParams(30,30));
+            active.addView(tx,new LinearLayout.LayoutParams(-1,22));
+            item.addView(active,new LinearLayout.LayoutParams(-1,66));
+
             item.setOnClickListener(v->{
                 for(int k=0;k<nav.getChildCount();k++){
                     View child=nav.getChildAt(k);
                     if(child instanceof LinearLayout){
                         LinearLayout box=(LinearLayout)((LinearLayout)child).getChildAt(0);
-                        box.setBackground(shape(Color.TRANSPARENT,20));
-                        TextView ii=(TextView)box.getChildAt(0);
+                        box.setBackground(shape(Color.TRANSPARENT,18));
+                        ImageView ii=(ImageView)box.getChildAt(0);
                         TextView tt=(TextView)box.getChildAt(1);
-                        ii.setTextColor(NAVY);
-                        tt.setTextColor(MUTED);
+                        ii.setColorFilter(Color.rgb(136,146,176));
+                        tt.setTextColor(Color.rgb(136,146,176));
                     }
                 }
-                active.setBackground(shape(Color.rgb(235,241,250),20));
-                ic.setTextColor(RED);
-                tx.setTextColor(NAVY);
+                active.setBackground(shape(Color.rgb(38,48,73),18));
+                ic.setColorFilter(RED);
+                tx.setTextColor(WHITE);
                 active.animate().scaleX(.94f).scaleY(.94f).setDuration(70)
                     .withEndAction(()->active.animate().scaleX(1f).scaleY(1f).setDuration(140).start()).start();
                 page(pg);
@@ -356,13 +361,12 @@ public class MainActivity extends Activity {
                 if(e.getAction()==MotionEvent.ACTION_DOWN) press(v);
                 return false;
             });
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,76,1);
+            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,70,1);
             p.setMargins(1,0,1,0);
             nav.addView(item,p);
         }
         return nav;
     }
-
     void page(String p){
         body.removeAllViews(); if(p.equals("Home")){homeContent();return;}
         topTitle(p);
