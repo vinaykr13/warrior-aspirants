@@ -202,8 +202,8 @@ public class MainActivity extends Activity {
 
         section("YOUR EXAM");
         LinearLayout exams=new LinearLayout(this);exams.setWeightSum(3);
-        premiumExam(exams,"SSC CGL","2027 • PRIMARY",true,v->topics("Maths"));
-        premiumExam(exams,"RAILWAY","PRACTICE",false,v->topics("Reasoning"));
+        premiumExam(exams,"SSC CGL","2027 • PRIMARY",true,v->page("Study"));
+        premiumExam(exams,"RAILWAY","PRACTICE",false,v->page("Study"));
         premiumExam(exams,"UP SI","PRACTICE",false,v->page("Study"));
         body.addView(exams);
 
@@ -371,13 +371,21 @@ public class MainActivity extends Activity {
         body.removeAllViews(); if(p.equals("Home")){homeContent();return;}
         topTitle(p);
         if(p.equals("Study")){
-            section("EXAM & SUBJECTS");
-            studyCard("📐","Maths","95%","Completed Topics",v->topics("Maths"));
-            studyCard("🧠","Reasoning","60%","Completed Topics",v->topics("Reasoning"));
-            studyCard("🔤","English","53%","Completed Topics",v->topics("English"));
-            studyCard("🌍","GK / GS","56%","Completed Topics",v->topics("GK / GS"));
+            section("SSC CGL 2027 • ALL SUBJECTS");
+            card("COMPLETE STUDY ROOM","Maths • Reasoning • English • GK/GS","Select any subject to open its complete topic list");
+            studyCard("📐","Maths","95%","12 Topics • Theory + Practice",v->topics("Maths"));
+            studyCard("🧠","Reasoning","60%","8 Topics • Theory + Practice",v->topics("Reasoning"));
+            studyCard("🔤","English","53%","8 Topics • Grammar + Practice",v->topics("English"));
+            studyCard("🌍","GK / GS","56%","7 Subjects • Theory + Practice",v->topics("GK / GS"));
+            section("OTHER EXAMS");
+            studyCard("🚆","Railway","Practice","Railway preparation",v->topics("Railway"));
+            studyCard("👮","UP SI","Practice","UP Police SI preparation",v->topics("UP SI"));
+            studyCard("🟢","UPSSSC PET","100 Questions","Complete PET syllabus",v->petSyllabus());
+            section("LIVE & RESOURCES");
             studyCard("◉","Current Affairs","Today","Daily Updates",v->page("Current Affairs"));
-            studyCard("🟢","UPSSSC PET","100 Questions","Complete 2026 Syllabus",v->petSyllabus());action("▶ Videos & YouTube Learning",v->openUrl("https://www.youtube.com/results?search_query=SSC+CGL+Maths+Reasoning+English"));action("📢 Vacancies & Sarkari Updates",v->vacancies());action("📄 PDF / Notes",v->pickPdf());
+            action("▶ Videos & YouTube Learning",v->openUrl("https://www.youtube.com/results?search_query=SSC+CGL+Maths+Reasoning+English"));
+            action("📢 Vacancies & Sarkari Updates",v->vacancies());
+            action("📄 PDF / Notes",v->pickPdf());
         } else if(p.equals("Practice")){
             hero("PRACTICE ARENA","Train your speed & accuracy","10 / 20 / 50 questions • Timer • Analysis",v->practice());
             action("⚡  Quick Practice — 10 Questions",v->practice());action("🎯  Topic Practice",v->topics("Practice Topics"));action("📚  PYQ Engine",v->pyq());action("🏆  Mock Test",v->mock());action("📕  Mistake Book",v->mistakes());
@@ -422,11 +430,22 @@ public class MainActivity extends Activity {
     void petDetail(int i){body.removeAllViews();String[][] d=PETContent.sections();topTitle("PET • "+d[i][0]);card("SYLLABUS","Section "+(i+1)+" • "+d[i][0],d[i][2]);body.addView(text("COMPLETE SYLLABUS TOPICS",11,RED,true));body.addView(text(d[i][3],14,DARK,false));body.addView(text("THEORY",11,RED,true));card("CONCEPTS","Easy Hindi Theory","पहले concept समझें, फिर questions करें.");body.addView(text(PETContent.theory(i),14,DARK,false));body.addView(text("⭐ IMPORTANT TOPICS",11,RED,true));body.addView(text(PETContent.important(i),14,DARK,false));action("🎯  Practice this section",v->practiceTopic("UPSSSC PET • "+d[i][0]));action("📚  PET PYQs",v->pyqTopic("UPSSSC PET • "+d[i][0]));action("🧠  Revise Theory",v->toast("Theory revision marked for this PET section."));action("←  Back to PET Syllabus",v->petSyllabus());}
 
     void topics(String s){
-        body.removeAllViews();topTitle(s+" Topics");
-        if(s.equals("Maths")){topic("01","Number System","Basics, divisibility, HCF / LCM",v->lesson("Number System"));topic("02","Simplification","BODMAS and calculations",v->lesson("Percentage"));topic("03","HCF & LCM","Factors and multiples",v->lesson("Number System"));topic("04","Percentage","Increase, decrease, successive",v->lesson("Percentage"));topic("05","Ratio & Proportion","Applications",v->lesson("Ratio & Proportion"));topic("06","Average","Mean and weighted average",v->lesson("Average"));topic("07","Profit & Loss","CP, SP and discount",v->lesson("Profit & Loss"));topic("08","Time & Work","Efficiency and work",v->lesson("Time & Work"));topic("09","TSD","Speed, distance and trains",v->lesson("Time, Speed & Distance"));topic("10","Algebra","Identities and equations",v->lesson("Algebra"));topic("11","Geometry","Lines, angles, triangles",v->lesson("Geometry & Mensuration"));topic("12","Trigonometry","Ratios and standard values",v->lesson("Trigonometry"));}
-        else if(s.equals("Reasoning")){topic("01","Analogy","Same relationship",v->lesson("Analogy"));topic("02","Classification","Odd one out",v->lesson("Classification"));topic("03","Series","Number and alphabet series",v->lesson("Series"));topic("04","Coding-Decoding","Patterns",v->lesson("Coding-Decoding"));topic("05","Blood Relation","Family relations",v->lesson("Blood Relation"));topic("06","Direction","Distance and paths",v->lesson("Direction & Distance"));topic("07","Syllogism","Statements and conclusions",v->lesson("Syllogism"));topic("08","Venn Diagram","Set relationships",v->lesson("Venn Diagram"));}
-        else if(s.equals("English")){topic("01","Parts of Speech","Grammar basics",v->lesson("Parts of Speech"));topic("02","Tenses","Present, past, future",v->lesson("Tenses"));topic("03","Subject-Verb Agreement","Rules",v->lesson("Subject-Verb Agreement"));topic("04","Articles","A, An, The",v->lesson("Articles"));topic("05","Prepositions","Usage",v->lesson("Prepositions"));topic("06","Voice","Active & Passive",v->lesson("Active & Passive Voice"));topic("07","Narration","Direct & indirect",v->lesson("Narration"));topic("08","Error Detection","Common grammar errors",v->lesson("Error Detection"));}
-        else {topic("01","History","Ancient, Medieval, Modern",v->lesson("History"));topic("02","Geography","India and world",v->lesson("Geography"));topic("03","Polity","Constitution",v->lesson("Polity"));topic("04","Economy","Basic concepts",v->lesson("Economy"));topic("05","Physics","Motion, energy, electricity",v->lesson("Physics"));topic("06","Chemistry","Matter and reactions",v->lesson("Chemistry"));topic("07","Biology","Cells, body, plants",v->lesson("Biology"));}
+        body.removeAllViews(); topTitle(s+" Topics");
+        if(s.equals("Maths")){
+            topic("01","Number System","Basics, divisibility, HCF / LCM",v->lesson("Number System"));topic("02","Simplification","BODMAS and calculations",v->lesson("Percentage"));topic("03","HCF & LCM","Factors and multiples",v->lesson("Number System"));topic("04","Percentage","Increase, decrease, successive",v->lesson("Percentage"));topic("05","Ratio & Proportion","Applications",v->lesson("Ratio & Proportion"));topic("06","Average","Mean and weighted average",v->lesson("Average"));topic("07","Profit & Loss","CP, SP and discount",v->lesson("Profit & Loss"));topic("08","Time & Work","Efficiency and work",v->lesson("Time & Work"));topic("09","TSD","Speed, distance and trains",v->lesson("Time, Speed & Distance"));topic("10","Algebra","Identities and equations",v->lesson("Algebra"));topic("11","Geometry","Lines, angles, triangles",v->lesson("Geometry & Mensuration"));topic("12","Trigonometry","Ratios and standard values",v->lesson("Trigonometry"));
+        } else if(s.equals("Reasoning")){
+            topic("01","Analogy","Same relationship",v->lesson("Analogy"));topic("02","Classification","Odd one out",v->lesson("Classification"));topic("03","Series","Number and alphabet series",v->lesson("Series"));topic("04","Coding-Decoding","Patterns",v->lesson("Coding-Decoding"));topic("05","Blood Relation","Family relations",v->lesson("Blood Relation"));topic("06","Direction","Distance and paths",v->lesson("Direction & Distance"));topic("07","Syllogism","Statements and conclusions",v->lesson("Syllogism"));topic("08","Venn Diagram","Set relationships",v->lesson("Venn Diagram"));
+        } else if(s.equals("English")){
+            topic("01","Parts of Speech","Grammar basics",v->lesson("Parts of Speech"));topic("02","Tenses","Present, past, future",v->lesson("Tenses"));topic("03","Subject-Verb Agreement","Rules",v->lesson("Subject-Verb Agreement"));topic("04","Articles","A, An, The",v->lesson("Articles"));topic("05","Prepositions","Usage",v->lesson("Prepositions"));topic("06","Voice","Active & Passive",v->lesson("Active & Passive Voice"));topic("07","Narration","Direct & indirect",v->lesson("Narration"));topic("08","Error Detection","Common grammar errors",v->lesson("Error Detection"));
+        } else if(s.equals("GK / GS")){
+            topic("01","History","Ancient, Medieval, Modern",v->lesson("History"));topic("02","Geography","India and world",v->lesson("Geography"));topic("03","Polity","Constitution",v->lesson("Polity"));topic("04","Economy","Basic concepts",v->lesson("Economy"));topic("05","Physics","Motion, energy, electricity",v->lesson("Physics"));topic("06","Chemistry","Matter and reactions",v->lesson("Chemistry"));topic("07","Biology","Cells, body, plants",v->lesson("Biology"));
+        } else if(s.equals("Railway")||s.equals("UP SI")){
+            section(s.equals("Railway")?"RAILWAY • SUBJECTS":"UP SI • SUBJECTS");
+            action("📐 Maths",v->topics("Maths"));action("🧠 Reasoning",v->topics("Reasoning"));action("🔤 English",v->topics("English"));action("🌍 GK / GS",v->topics("GK / GS"));
+        } else {
+            section("SELECT SUBJECT");
+            action("📐 Maths",v->topics("Maths"));action("🧠 Reasoning",v->topics("Reasoning"));action("🔤 English",v->topics("English"));action("🌍 GK / GS",v->topics("GK / GS"));
+        }
         action("←  Back to Study",v->page("Study"));
     }
 
